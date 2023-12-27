@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.i(TAG,"SUBSCRIBED");
                 helper.subscribe("humidity");
                 helper.subscribe("light");
+                helper.subscribe("spider");
                 if (savedInstanceState == null) {
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.frame, new Menu(),null)
@@ -63,7 +64,6 @@ public class MainActivity extends AppCompatActivity {
                 String payload=new String(message.getPayload());
                 double valor=Double.parseDouble(payload);
                 Log.d(TAG,"T: "+topic+ " P: "+payload);
-                Log.i(TAG,payload);
 
                 if (topic.equals("temperature")) {
 
