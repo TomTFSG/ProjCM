@@ -38,12 +38,19 @@ public class MainActivity extends AppCompatActivity {
         clientId="userAndroid";
         helper =new MqttHelper(getApplicationContext(),brookerUri,clientId);
         Log.w(TAG,"HELLO");
+
         helper.setCallback(new MqttCallbackExtended() {
             @Override
             public void connectComplete(boolean reconnect, String serverURI) {
                 helper.subscribe("temperature");
                 Log.i(TAG,"SUBSCRIBED");
                 helper.subscribe("humidity");
+                helper.subscribe("light");
+                if (savedInstanceState == null) {
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.frame, new Menu(),null)
+                            .commit();
+                }
             }
 
             @Override
@@ -56,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
                 String payload=new String(message.getPayload());
                 double valor=Double.parseDouble(payload);
                 Log.d(TAG,"T: "+topic+ " P: "+payload);
+                Log.i(TAG,payload);
+
                 if (topic.equals("temperature")) {
 
                 }
@@ -79,7 +88,11 @@ public class MainActivity extends AppCompatActivity {
         MqttConnectOptions mqttConnectOptions = new MqttConnectOptions();
         mqttConnectOptions.setAutomaticReconnect(true);
         helper.connect(mqttConnectOptions);
+        Log.i(TAG,"ABACATE");
+
+
     }
+
     private String getCurrentTime() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.getDefault());
         return sdf.format(new Date());
