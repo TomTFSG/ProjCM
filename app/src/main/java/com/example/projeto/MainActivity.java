@@ -3,6 +3,7 @@ package com.example.projeto;
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
@@ -27,12 +28,18 @@ import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
+    SharedViewModel sharedViewModel;
+
     MqttHelper helper;
     String brookerUri;
     String clientId;
+    Double temperatura;
+    Double humidade;
+    Double luz;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);
         setContentView(R.layout.activity_main);
         brookerUri="tcp://broker.hivemq.com:1883";
         clientId="userAndroid";
@@ -66,10 +73,16 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG,"T: "+topic+ " P: "+payload);
 
                 if (topic.equals("temperature")) {
-
+                    sharedViewModel.setTemperatura(valor);
+                    temperatura=valor;
                 }
                 else if (topic.equals("humidity")) {
-
+                    sharedViewModel.setHumidade(valor);
+                    humidade=valor;
+                }
+                else if(topic.equals("light")){
+                    sharedViewModel.setLuz(valor);
+                    luz=valor;
                 }
             }
 

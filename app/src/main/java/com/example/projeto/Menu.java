@@ -1,9 +1,12 @@
 package com.example.projeto;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +29,7 @@ public class Menu extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view=getView();
+        View view=inflater.inflate(R.layout.fragment_menu, container, false);
         Button humido=view.findViewById(R.id.humido);
         Button neutro=view.findViewById(R.id.neutro);
         Button seco=view.findViewById(R.id.seco);
@@ -44,6 +47,7 @@ public class Menu extends Fragment {
         neutro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.i(TAG,"CLICKED");
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.frame, Neutro.class,null)
@@ -62,6 +66,6 @@ public class Menu extends Fragment {
             }
         });
 
-        return inflater.inflate(R.layout.fragment_menu, container, false);
+        return view;
     }
 }
