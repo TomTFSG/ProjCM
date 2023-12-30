@@ -5,13 +5,33 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/textView"
+    <Button
+        android:id="@+id/humido"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="MENU FRAGMENT"
+        android:text="Planta de solo Humido"
+        app:layout_constraintBottom_toTopOf="@+id/neutro"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/neutro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Planta de solo neutro"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/seco"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Planta de solo Seco"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/neutro" />
 </androidx.constraintlayout.widget.ConstraintLayout>
