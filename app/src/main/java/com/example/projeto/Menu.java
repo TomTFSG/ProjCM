@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 
 public class Menu extends Fragment {
@@ -30,7 +31,7 @@ public class Menu extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view=inflater.inflate(R.layout.fragment_menu, container, false);
-        Button humido=view.findViewById(R.id.humido);
+        ImageButton humido=view.findViewById(R.id.humido);
         Button neutro=view.findViewById(R.id.neutro);
         Button seco=view.findViewById(R.id.seco);
 
