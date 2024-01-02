@@ -26,6 +26,9 @@
         </activity>
         <service android:name="org.eclipse.paho.android.service.MqttService"
             android:exported="false" />
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>

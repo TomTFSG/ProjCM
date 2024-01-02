@@ -32,8 +32,8 @@ public class Menu extends Fragment {
         // Inflate the layout for this fragment
         View view=inflater.inflate(R.layout.fragment_menu, container, false);
         ImageButton humido=view.findViewById(R.id.humido);
-        Button neutro=view.findViewById(R.id.neutro);
-        Button seco=view.findViewById(R.id.seco);
+        ImageButton neutro=view.findViewById(R.id.neutro);
+        ImageButton seco=view.findViewById(R.id.seco);
 
         humido.setOnClickListener(new View.OnClickListener() {
             @Override
