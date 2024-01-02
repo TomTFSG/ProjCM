@@ -8,7 +8,8 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 public class MqttHelper {
-    private static final int DEFAUL_QOS=1;
+    private static final int DEFAULT_QOS = 1;
+
     private MqttAndroidClient mqttAndroidClient;
 
     public MqttHelper(Context context, String brokerUri, String clientId) {
@@ -37,7 +38,9 @@ public class MqttHelper {
 
     public void subscribe(String topic) {
         try {
-            mqttAndroidClient.subscribe(topic,DEFAUL_QOS, null);
+            // Add the receiver permission when subscribing
+            String receiverPermission = "com.example.projeto.permission.MQTT_RECEIVER";
+            mqttAndroidClient.subscribe(topic, DEFAULT_QOS, null);
         } catch (MqttException e) {
             e.printStackTrace();
         }
@@ -46,7 +49,7 @@ public class MqttHelper {
     public void publish(String topic, String payload) {
         try {
             MqttMessage message = new MqttMessage(payload.getBytes());
-            message.setQos(DEFAUL_QOS);
+            message.setQos(DEFAULT_QOS);
             message.setRetained(false);
             mqttAndroidClient.publish(topic, message);
         } catch (MqttException e) {
