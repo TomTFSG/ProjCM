@@ -3,35 +3,210 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:baselineAligned="false"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
     <TextView
-        android:id="@+id/luz"
-        android:layout_width="wrap_content"
+        android:id="@+id/TituloFragHum"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="LUZ"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="30dp"
+        android:fontFamily="@font/montserrat_alternates_bold"
+
+        android:text="NEUTRAL SOIL PLANT"
+        android:textAlignment="center"
+        android:textColor="#FAB0B9"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="341dp"
+        android:layout_height="393dp"
+        android:layout_marginEnd="-50dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:srcCompat="@drawable/botanico" />
 
-    <TextView
-        android:id="@+id/humi"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Humidade"
-        app:layout_constraintBottom_toTopOf="@+id/luz"
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:background="@drawable/rectLight"
+        android:orientation="vertical"
+        android:padding="5dp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.11"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/TituloFragHum"
+        app:layout_constraintVertical_bias="0.661">
 
-    <TextView
-        android:id="@+id/temp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Temperatura"
+        <TextView
+            android:id="@+id/Tituloluz"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_alternates"
+            android:paddingStart="5dp"
+            android:paddingTop="5dp"
+            android:text="Light"
+            android:textAlignment="textStart"
+            android:textSize="22dp"
+            tools:layout_editor_absoluteX="50dp"
+
+            />
+
+        <TextView
+            android:id="@+id/luz"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_alternates_bold"
+            android:text="65%"
+            android:textAlignment="center"
+            android:textSize="44dp"
+            tools:layout_editor_absoluteX="50dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:layout_marginBottom="100dp"
+        android:background="@drawable/rectMoist"
+        android:orientation="vertical"
+        android:padding="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.11"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/luz" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
+        app:layout_constraintVertical_bias="0.327">
+
+        <TextView
+            android:id="@+id/Titulohumi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_alternates"
+            android:paddingStart="5dp"
+
+            android:paddingTop="5dp"
+            android:text="Soil Moisture"
+            android:textAlignment="textStart"
+            android:textSize="20dp"
+            tools:layout_editor_absoluteX="50dp"
+
+            tools:layout_editor_absoluteY="487dp" />
+
+        <TextView
+            android:id="@+id/Titulohumi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_alternates_bold"
+            android:paddingTop="5dp"
+            android:text="90%"
+            android:textAlignment="center"
+            android:textSize="44dp"
+            tools:layout_editor_absoluteX="50dp"
+            tools:layout_editor_absoluteY="487dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:background="@drawable/rectTemp"
+        android:orientation="vertical"
+        android:padding="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.11"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="296dp">
+
+        <TextView
+            android:id="@+id/Titulotemp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_alternates"
+            android:paddingStart="5dp"
+            android:paddingTop="5dp"
+            android:text="Temp"
+            android:textAlignment="textStart"
+            android:textSize="20dp"
+            tools:layout_editor_absoluteX="34dp"
+            tools:layout_editor_absoluteY="182dp" />
+
+        <TextView
+            android:id="@+id/temp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_alternates_bold"
+            android:paddingTop="5dp"
+            android:text="10º"
+            android:textAlignment="center"
+            android:textSize="44dp"
+            tools:layout_editor_absoluteX="34dp"
+            tools:layout_editor_absoluteY="182dp" />
+
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/TituloHora"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:layout_marginEnd="56dp"
+        android:fontFamily="@font/montserrat_alternates"
+        android:text="Watering time"
+        android:textAlignment="center"
+        android:textColor="#FAB0B9"
+        android:textSize="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/TituloFragHum" />
+
+    <TextView
+        android:id="@+id/Horas"
+        android:layout_width="116dp"
+        android:layout_height="47dp"
+        android:fontFamily="@font/montserrat_alternates_bold"
+        android:text="09:30h"
+        android:textAlignment="center"
+        android:textColor="#0A5845"
+        android:textSize="30dp"
+        app:layout_constraintTop_toBottomOf="@+id/TituloHora"
+        tools:layout_editor_absoluteX="239dp" />
+
+    <ImageButton
+        android:id="@+id/imageButton"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:background="@color/white"
+        android:scaleType="fitCenter"
+        app:layout_constraintTop_toBottomOf="@+id/Horas"
+        app:srcCompat="@drawable/botaoEdit"
+        tools:layout_editor_absoluteX="264dp" />
+
+    <ImageButton
+        android:id="@+id/imageButtonHistorico"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="68dp"
+        android:background="@color/white"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        app:srcCompat="@drawable/botaoHistorico" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
