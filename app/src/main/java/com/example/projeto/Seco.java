@@ -9,7 +9,11 @@ import androidx.lifecycle.ViewModelProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class Seco extends Fragment {
     SharedViewModel sharedViewModel;
@@ -29,7 +33,7 @@ public class Seco extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         MainActivity main=(MainActivity) getActivity();
-        View view=inflater.inflate(R.layout.fragment_humido, container, false);
+        View view=inflater.inflate(R.layout.fragment_seco, container, false);
 
         sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
 
@@ -56,6 +60,26 @@ public class Seco extends Fragment {
             @Override
             public void onChanged(Double newTemperatura) {
                 tTemp.setText(Double.toString(newTemperatura));
+            }
+        });
+
+        ImageButton edit =view.findViewById(R.id.imageButton);
+
+        edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)  {
+                try {
+                    JSONObject payload = new JSONObject();
+                    payload.put("type", 0);
+                    payload.put("temp", tTemp.getText().toString());
+                    payload.put("humi", tHumi.getText().toString());
+                    payload.put("light", tLuz.getText().toString());
+                    String jsonS = payload.toString();
+                    main.helper.publish("water", jsonS);
+                }
+                catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
         return view;
