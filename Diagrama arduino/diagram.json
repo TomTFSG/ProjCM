@@ -4,12 +4,7 @@
   "editor": "wokwi",
   "parts": [
     { "type": "wokwi-esp32-devkit-v1", "id": "esp", "top": 4.7, "left": 71.8, "attrs": {} },
-    { "type": "chip-soil_sensor",
-      "id": "chip1",
-      "top": 154.62,
-      "left": 283.2,
-      "attrs": {} 
-    },
+    { "type": "chip-soil_sensor", "id": "chip1", "top": 154.62, "left": 283.2, "attrs": {} },
     {
       "type": "wokwi-lcd1602",
       "id": "lcd1",
@@ -30,7 +25,7 @@
       "top": 223.8,
       "left": 488.7,
       "rotate": 90,
-      "attrs": { "temperature": "10.5" }
+      "attrs": { "temperature": "29.8" }
     }
   ],
   "connections": [
