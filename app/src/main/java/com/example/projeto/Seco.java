@@ -32,7 +32,7 @@ public class Seco extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        MainActivity main=(MainActivity) getActivity();
+        MessageReceiver msgRec=(MessageReceiver) getContext();
         View view=inflater.inflate(R.layout.fragment_seco, container, false);
 
         sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
@@ -75,7 +75,7 @@ public class Seco extends Fragment {
                     payload.put("humi", tHumi.getText().toString());
                     payload.put("light", tLuz.getText().toString());
                     String jsonS = payload.toString();
-                    main.helper.publish("water", jsonS);
+                    msgRec.helper.publish("water", jsonS);
                 }
                 catch (JSONException e) {
                     e.printStackTrace();
