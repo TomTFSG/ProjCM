@@ -5,15 +5,19 @@ import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 import static java.security.AccessController.getContext;
 
 import android.app.IntentService;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.PowerManager;
 import android.util.Log;
 
+import androidx.core.app.NotificationCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -34,6 +38,9 @@ public class MessageReceiver extends IntentService {
     Double type;
     FeedReaderDbHelper dbHelper;
     SQLiteDatabase db;
+    private static final String CHANNEL_ID = "Regador9000";
+
+
 
 
     public MessageReceiver() {
@@ -42,6 +49,17 @@ public class MessageReceiver extends IntentService {
     @Override
     public void onCreate() {
         super.onCreate();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Regador9000";
+            String description = "Para as regas";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+
+            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            notificationManager.createNotificationChannel(channel);
+        }
+
         FeedReaderDbHelper dbHelper = new FeedReaderDbHelper(getApplicationContext());
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
@@ -117,7 +135,6 @@ public class MessageReceiver extends IntentService {
                     helper.subscribe("humidity");
                     helper.subscribe("light");
                     helper.subscribe("rega");
-
                 }
 
                 @Override
@@ -138,8 +155,17 @@ public class MessageReceiver extends IntentService {
                     } else if (topic.equals("light")) {
                         luz = valor;
                         publishMqttMessage();
-                    } else if(topic.equals("rega")){
+                    } else if(topic.equals("rega") && payload != null){
                         Log.w("REGADO",payload+"ml regados");
+                        /*
+                        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
+                                .setSmallIcon(R.drawable.logo2)
+                                .setContentTitle("REGADOR 9000")
+                                .setContentText("Regado com "+payload+"ml de água")
+                                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+                        */
+                        //stopSelf();
                     }
                 }
 

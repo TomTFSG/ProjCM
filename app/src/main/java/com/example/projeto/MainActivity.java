@@ -67,8 +67,8 @@ public class MainActivity extends AppCompatActivity {
         //horas
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, 17);
-        calendar.set(Calendar.MINUTE, 7);
+        calendar.set(Calendar.HOUR_OF_DAY, 2);
+        calendar.set(Calendar.MINUTE, 40);
         if (calendar.getTimeInMillis() <= System.currentTimeMillis()) {
             calendar.add(Calendar.DAY_OF_MONTH, 1);
         }
@@ -82,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.i(TAG,"SUBSCRIBED");
                 helper.subscribe("humidity");
                 helper.subscribe("light");
+                helper.subscribe("rega");
                 if (savedInstanceState == null) {
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.frame, new Menu(),null)
