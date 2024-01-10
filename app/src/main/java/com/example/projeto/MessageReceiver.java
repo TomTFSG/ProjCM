@@ -49,16 +49,7 @@ public class MessageReceiver extends IntentService {
     @Override
     public void onCreate() {
         super.onCreate();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "Regador9000";
-            String description = "Para as regas";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-            channel.setDescription(description);
 
-            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-            notificationManager.createNotificationChannel(channel);
-        }
 
         FeedReaderDbHelper dbHelper = new FeedReaderDbHelper(getApplicationContext());
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -80,10 +71,6 @@ public class MessageReceiver extends IntentService {
         if (cursor != null && cursor.moveToFirst()) {
             int columnIndex = cursor.getColumnIndexOrThrow(FeedReaderDbHelper.COLUMN_NAME_ATUAL);
             type = cursor.getDouble(columnIndex);
-
-            // Now 'value' contains the retrieved value from the database
-            Log.i(TAG, "Read value from database: " + type);
-
             cursor.close();
         } else {
             Log.e(TAG, "Error reading value from the database");

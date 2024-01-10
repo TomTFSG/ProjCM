@@ -10,6 +10,7 @@ import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
@@ -34,6 +35,11 @@ public class MainActivity extends AppCompatActivity {
     Double temperatura;
     Double humidade;
     Double luz;
+    AlarmManager alarmManager;
+    PendingIntent pendingIntent;
+
+    int hora;
+    int minutos;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,13 +48,18 @@ public class MainActivity extends AppCompatActivity {
         db = dbHelper.getWritableDatabase(); // Use getWritableDatabase() instead of getReadableDatabase()
         ContentValues values = new ContentValues();
         values.put(FeedReaderDbHelper.COLUMN_NAME_ATUAL, 1); // Use an appropriate integer value
-        long newRowId = db.replace(FeedReaderDbHelper.TABLE_NAME, null, values);
+        values.put(FeedReaderDbHelper.COLUMN_NAME_HORAS, 17);
+        values.put(FeedReaderDbHelper.COLUMN_NAME_MINUTOS, 55);
+        long newRowId = db.insertWithOnConflict(
+                FeedReaderDbHelper.TABLE_NAME,
+                null,
+                values,
+                SQLiteDatabase.CONFLICT_IGNORE);
         if (newRowId != -1) {
             Log.i(TAG, "Value inserted successfully with ID: " + newRowId);
         } else {
             Log.e(TAG, "Error inserting value into the database");
         }
-
 
         sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);
         setContentView(R.layout.activity_main);
@@ -59,21 +70,27 @@ public class MainActivity extends AppCompatActivity {
 
         //ALARME PARA REGAR AS PLANTAS
         Context context=getApplicationContext();
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent alarmIntent = new Intent(context, AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, alarmIntent, PendingIntent.FLAG_IMMUTABLE);
+        pendingIntent = PendingIntent.getBroadcast(context, 0, alarmIntent, PendingIntent.FLAG_IMMUTABLE);
 
 
-        //horas
+        //HORAS E MINUTOS
+        String[] horasProjection = {FeedReaderDbHelper.COLUMN_NAME_HORAS};
+        hora = getValueFromDatabase(db, horasProjection, FeedReaderDbHelper.COLUMN_NAME_HORAS);
+        String[] minutosProjection = {FeedReaderDbHelper.COLUMN_NAME_MINUTOS};
+        minutos = getValueFromDatabase(db, minutosProjection, FeedReaderDbHelper.COLUMN_NAME_MINUTOS);
+
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, 2);
-        calendar.set(Calendar.MINUTE, 40);
+        calendar.set(Calendar.HOUR_OF_DAY, hora);
+        calendar.set(Calendar.MINUTE, minutos);
         if (calendar.getTimeInMillis() <= System.currentTimeMillis()) {
             calendar.add(Calendar.DAY_OF_MONTH, 1);
         }
         long triggerTime = calendar.getTimeInMillis();
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent);
+
 
         helper.setCallback(new MqttCallbackExtended() {
             @Override
@@ -138,5 +155,28 @@ public class MainActivity extends AppCompatActivity {
     private String getCurrentTime() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.getDefault());
         return sdf.format(new Date());
+    }
+    private int getValueFromDatabase(SQLiteDatabase db, String[] projection, String columnName) {
+        Cursor cursor = db.query(
+                FeedReaderDbHelper.TABLE_NAME,
+                projection,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
+        int value = 0;
+
+        if (cursor != null && cursor.moveToFirst()) {
+            int columnIndex = cursor.getColumnIndexOrThrow(columnName);
+            value = cursor.getInt(columnIndex);
+            cursor.close();
+        } else {
+            Log.e(TAG, "Error reading value from the database");
+        }
+
+        return value;
     }
 }

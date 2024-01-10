@@ -8,10 +8,17 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "data.db";
     public static final String TABLE_NAME = "data";
     public static final String COLUMN_NAME_ATUAL = "atual";
+    public static final String COLUMN_NAME_HORAS  = "horas";
+    public static final String COLUMN_NAME_MINUTOS = "minutos";
+    public static final String _ID = "id";
+
 
     SQLiteDatabase sql;
     public static final String SQL_CREATE_ENTRIES=
             "CREATE TABLE " + TABLE_NAME + " (" +
+                    _ID + " INTEGER PRIMARY KEY," +
+                    COLUMN_NAME_HORAS + " INTEGER,"+
+                    COLUMN_NAME_MINUTOS + " INTEGER,"+
                     COLUMN_NAME_ATUAL + " TEXT)";
 
     public static final String SQL_DELETE_ENTRIES="DROP TABLE IF EXISTS " + TABLE_NAME;;

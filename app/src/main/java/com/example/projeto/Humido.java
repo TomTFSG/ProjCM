@@ -4,6 +4,7 @@ import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
@@ -31,9 +32,6 @@ public class Humido extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent intent = new Intent(MessageReceiver.ACTION_UPDATE_TYPE);
-        intent.putExtra("newTemperatureValue", 2);
-        getActivity().sendBroadcast(intent);
         dbHelper = new FeedReaderDbHelper(getContext());
         db = dbHelper.getWritableDatabase(); // Use getWritableDatabase() instead of getReadableDatabase()
         ContentValues values = new ContentValues();
@@ -56,6 +54,15 @@ public class Humido extends Fragment {
         TextView tLuz=view.findViewById(R.id.luz);
         TextView tTemp=view.findViewById(R.id.temp);
 
+
+        TextView tHoras=view.findViewById(R.id.Horas);
+        String[] horasProjection = {FeedReaderDbHelper.COLUMN_NAME_HORAS};
+        int hora = getValueFromDatabase(db, horasProjection, FeedReaderDbHelper.COLUMN_NAME_HORAS);
+        String[] minutosProjection = {FeedReaderDbHelper.COLUMN_NAME_MINUTOS};
+        int minutos = getValueFromDatabase(db, minutosProjection, FeedReaderDbHelper.COLUMN_NAME_MINUTOS);
+
+        tHoras.setText(hora+":"+minutos+"h");
+        Log.w("H",hora+":"+minutos+"h");
         sharedViewModel.getHumidade().observe(getViewLifecycleOwner(), new Observer<Double>() {
             @Override
             public void onChanged(Double humidadeValue) {
@@ -84,7 +91,11 @@ public class Humido extends Fragment {
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)  {
-
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.frame, SetTime.class,null)
+                        .addToBackStack(null)
+                        .commit();
                     /*
                     JSONObject payload = new JSONObject();
                     payload.put("type", 2);
@@ -97,6 +108,31 @@ public class Humido extends Fragment {
         });
 
         return view;
+    }
+
+    private int getValueFromDatabase(SQLiteDatabase db, String[] projection, String columnName) {
+        Cursor cursor = db.query(
+                FeedReaderDbHelper.TABLE_NAME,
+                projection,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
+        int value = 0;
+
+        if (cursor != null && cursor.moveToFirst()) {
+            int columnIndex = cursor.getColumnIndexOrThrow(columnName);
+            value = cursor.getInt(columnIndex);
+            cursor.close();
+        } else {
+            Log.e(TAG, "Error reading value from the database");
+        }
+        String a=Integer.toString(value);
+        Log.e(columnName,a);
+        return value;
     }
 
 }
