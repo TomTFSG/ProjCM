@@ -96,14 +96,18 @@ public class Humido extends Fragment {
                         .replace(R.id.frame, SetTime.class,null)
                         .addToBackStack(null)
                         .commit();
-                    /*
-                    JSONObject payload = new JSONObject();
-                    payload.put("type", 2);
-                    payload.put("temp", tTemp.getText().toString());
-                    payload.put("humi", tHumi.getText().toString());
-                    payload.put("light", tLuz.getText().toString());
-                    String jsonS = payload.toString();
-                    msgRec.helper.publish("water", jsonS);*/
+            }
+        });
+
+        ImageButton hist=view.findViewById(R.id.imageButtonHistorico);
+        hist.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)  {
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.frame, Historico.class,null)
+                        .addToBackStack(null)
+                        .commit();
             }
         });
 

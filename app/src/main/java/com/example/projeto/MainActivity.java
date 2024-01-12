@@ -14,6 +14,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
+
+import com.anychart.chart.common.dataentry.ValueDataEntry;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
@@ -118,17 +121,25 @@ public class MainActivity extends AppCompatActivity {
                 double valor=Double.parseDouble(payload);
                 //Log.d(TAG,"T: "+topic+ " P: "+payload);
 
+
                 if (topic.equals("temperature")) {
+                    ContentValues values = new ContentValues();
+                    values.put(FeedReaderDbHelper.COLUMN_NAME_TIME, getCurrentTime());
+                    values.put(FeedReaderDbHelper.COLUMN_NAME_TEMP, Double.toString(valor));
+                    db.insert(FeedReaderDbHelper.TABLE_NAME, null, values);
                     sharedViewModel.setTemperatura(valor);
-                    temperatura=valor;
-                }
-                else if (topic.equals("humidity")) {
+                    temperatura = valor;
+                } else if (topic.equals("humidity")) {
+                    ContentValues values = new ContentValues();
+                    values.put(FeedReaderDbHelper.COLUMN_NAME_TIME, getCurrentTime());
+                    values.put(FeedReaderDbHelper.COLUMN_NAME_HUMI, Double.toString(valor));
+                    db.insert(FeedReaderDbHelper.TABLE_NAME, null, values);
                     sharedViewModel.setHumidade(valor);
-                    humidade=valor;
-                }
-                else if(topic.equals("light")){
+                    humidade = valor;
+                } else if (topic.equals("light")) {
+                    // Handle light topic
                     sharedViewModel.setLuz(valor);
-                    luz=valor;
+                    luz = valor;
                 }
             }
 
@@ -179,4 +190,6 @@ public class MainActivity extends AppCompatActivity {
 
         return value;
     }
+
+
 }
