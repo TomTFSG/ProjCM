@@ -29,11 +29,11 @@
             </intent-filter>
         </activity>
         <receiver
-            android:name=".AlarmReceiver"
+            android:name=".misc.AlarmReceiver"
             android:enabled="true"
             android:exported="false" />
         <service
-            android:name=".MessageReceiver"
+            android:name=".misc.MessageReceiver"
             android:exported="false" />
         <service android:name="org.eclipse.paho.android.service.MqttService"
             android:exported="false" />

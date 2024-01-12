@@ -1,24 +1,11 @@
-package com.example.projeto;
-
-import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
-
-import static java.security.AccessController.getContext;
+package com.example.projeto.misc;
 
 import android.app.IntentService;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Build;
 import android.os.PowerManager;
 import android.util.Log;
-
-import androidx.core.app.NotificationCompat;
-import androidx.lifecycle.ViewModelProvider;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;

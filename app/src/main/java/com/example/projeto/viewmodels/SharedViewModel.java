@@ -1,4 +1,4 @@
-package com.example.projeto;
+package com.example.projeto.viewmodels;
 
 import android.util.Log;
 

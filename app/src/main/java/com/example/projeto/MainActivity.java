@@ -14,9 +14,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.anychart.chart.common.dataentry.ValueDataEntry;
+import com.example.projeto.fragments.Menu;
+import com.example.projeto.misc.AlarmReceiver;
+import com.example.projeto.misc.FeedReaderDbHelper;
+import com.example.projeto.misc.MqttHelper;
+import com.example.projeto.viewmodels.SharedViewModel;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
@@ -29,7 +32,7 @@ import java.util.Date;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
-    SharedViewModel sharedViewModel;
+    public SharedViewModel sharedViewModel;
     FeedReaderDbHelper dbHelper;
     SQLiteDatabase db;
     MqttHelper helper;
@@ -38,8 +41,8 @@ public class MainActivity extends AppCompatActivity {
     Double temperatura;
     Double humidade;
     Double luz;
-    AlarmManager alarmManager;
-    PendingIntent pendingIntent;
+    public AlarmManager alarmManager;
+    public PendingIntent pendingIntent;
 
     int hora;
     int minutos;
@@ -57,7 +60,8 @@ public class MainActivity extends AppCompatActivity {
                 FeedReaderDbHelper.TABLE_NAME,
                 null,
                 values,
-                SQLiteDatabase.CONFLICT_IGNORE);
+                SQLiteDatabase.CONFLICT_IGNORE
+        );
         if (newRowId != -1) {
             Log.i(TAG, "Value inserted successfully with ID: " + newRowId);
         } else {

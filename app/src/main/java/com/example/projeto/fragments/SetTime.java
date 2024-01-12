@@ -1,11 +1,10 @@
-package com.example.projeto;
+package com.example.projeto.fragments;
 
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.ContentValues;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +14,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.NumberPicker;
 import androidx.fragment.app.Fragment;
+
+import com.example.projeto.misc.FeedReaderDbHelper;
+import com.example.projeto.MainActivity;
+import com.example.projeto.R;
 
 import java.util.Calendar;
 
@@ -77,46 +80,7 @@ public class SetTime extends Fragment {
 
                 Log.i("HORAS","HORARIO MARCADO PARA AS: "+h+":"+m);
                 updateAlarmTime(h,m);
-                String[] projection = {
-                        FeedReaderDbHelper.COLUMN_NAME_ATUAL
-                };
-
-                Cursor cursor = db.query(
-                        FeedReaderDbHelper.TABLE_NAME,
-                        projection,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null
-                );
-                Double type=0.0;
-                if (cursor != null && cursor.moveToFirst()) {
-                    int columnIndex = cursor.getColumnIndexOrThrow(FeedReaderDbHelper.COLUMN_NAME_ATUAL);
-                    type = cursor.getDouble(columnIndex);
-                    cursor.close();
-                } else {
-                    Log.e(TAG, "Error reading value from the database");
-                }
-                if(type.equals(0)) {
-                    getActivity().getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.frame, Seco.class, null)
-                            .addToBackStack(null)
-                            .commit();
-                }else if(type.equals(1)) {
-                    getActivity().getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.frame, Neutro.class, null)
-                            .addToBackStack(null)
-                            .commit();
-                }else if(type.equals(2)) {
-                    getActivity().getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.frame, Humido.class, null)
-                            .addToBackStack(null)
-                            .commit();
-                }
+                getActivity().getSupportFragmentManager().popBackStack();
             }
         });
 

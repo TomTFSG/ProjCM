@@ -1,18 +1,9 @@
-package com.example.projeto;
+package com.example.projeto.misc;
 
-import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
-import static androidx.legacy.content.WakefulBroadcastReceiver.startWakefulService;
-
-import android.app.AlarmManager;
-import android.app.IntentService;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.nfc.Tag;
 import android.util.Log;
-
-import androidx.legacy.content.WakefulBroadcastReceiver;
 
 public class AlarmReceiver extends BroadcastReceiver {
     MqttHelper helper;

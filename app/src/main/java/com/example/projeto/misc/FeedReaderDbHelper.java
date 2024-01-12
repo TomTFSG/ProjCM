@@ -1,4 +1,4 @@
-package com.example.projeto;
+package com.example.projeto.misc;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -24,7 +24,7 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
                     COLUMN_NAME_TIME + " TEXT," +
                     COLUMN_NAME_TEMP + " TEXT,"+
                     COLUMN_NAME_HUMI + " TEXT,"+
-                    COLUMN_NAME_ATUAL + " TEXT)";
+                    COLUMN_NAME_ATUAL + " INTEGER)";
 
     public static final String SQL_DELETE_ENTRIES="DROP TABLE IF EXISTS " + TABLE_NAME;;
     public FeedReaderDbHelper(Context context) {

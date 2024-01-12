@@ -2,4 +2,7 @@
     <string name="app_name">Projeto</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="moist_soil_plant">MOIST SOIL PLANT</string>
+    <string name="humid_soil_plant">HUMID SOIL PLANT</string>
+    <string name="neutral_soil_plant">NEUTRAL SOIL PLANT</string>
 </resources>
