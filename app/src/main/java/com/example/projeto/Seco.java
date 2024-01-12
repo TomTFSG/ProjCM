@@ -106,6 +106,17 @@ public class Seco extends Fragment {
                     msgRec.helper.publish("water", jsonS);*/
             }
         });
+        ImageButton hist=view.findViewById(R.id.imageButtonHistorico);
+        hist.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)  {
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.frame, Historico.class,null)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
 
         return view;
     }
