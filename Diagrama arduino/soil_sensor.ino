@@ -3,19 +3,24 @@
 #include <DHTesp.h>
 #include <WiFi.h>
 #include <PubSubClient.h>
+#include <ArduinoJson.h>
+
 
 String ID_MQTT;
 char *letters = "abcdefghijklmnopqrstuvwxyz0123456789";
 #define TOPIC_PUBLISH_TEMPERATURE "temperature"
 #define TOPIC_PUBLISH_HUMIDITY "humidity"
 #define TOPIC_PUBLISH_LIGHT "light"
+#define TOPIC_REGA "water"
 #define PUBLISH_DELAY 500
 unsigned long publishUpdate;
+const size_t bufferSize = JSON_OBJECT_SIZE(4) + 50;
 
 // Wi-Fi settinges
 const char *SSID = "Wokwi-GUEST";
 const char *PASSWORD = "";
-
+String msgR="nope";
+String abacate="A";
 // Define MQTT Broker and PORT
 const char *BROKER_MQTT = "broker.hivemq.com";
 int BROKER_PORT = 1883;
@@ -30,6 +35,8 @@ const int DHT_PIN = 15;
 const float GAMMA = 0.7;
 const float RL10 = 85;
 DHTesp dhtSensor;
+
+
 
 void startWifi(void);
 void initMQTT(void);
@@ -62,14 +69,28 @@ void callbackMQTT(char *topic, byte *payload, unsigned int length) {
   Serial.printf("Message: %s\n", msg, topic);
 
 
-  /*if (String(topic) == TOPIC_LIGHT) {
-    // RECEBE MENSAGEM AQUI
-    if (msg.equals("bingbong")) {
-
-
+  if (String(topic) == TOPIC_REGA) {
+    // RECEBE MENSAGEM AQUI/////////////////////////////////////////////////////////////
+    msgR="";
+    for (int i = 0; i < length; i++) {
+    char c = (char)payload[i];
+    msgR += c;
     }
+    DynamicJsonDocument doc(bufferSize);
+    DeserializationError error = deserializeJson(doc, msgR);
+    if (error) {
+    Serial.print(F("deserializeJson() failed: "));
+    Serial.println(error.c_str());
+    return;
   }
-  */
+  // Extract variables from the JSON document
+  double temperature = doc["temp"];
+  double humidity = doc["humi"];
+  double light = doc["light"];
+  double type=doc["type"];
+  regar(type,temperature,humidity,light);
+  }
+  
 }
 
 // SUBSCREVER A TOPICOS
@@ -87,7 +108,7 @@ void reconnectMQTT(void) {
     if (MQTT.connect(ID_MQTT.c_str())) {
       Serial.print("* Connected to broker successfully with ID: ");
       Serial.println(ID_MQTT);
-      //MQTT.subscribe(TOPIC_LIGHT);
+      MQTT.subscribe(TOPIC_REGA);
     } else {
       Serial.println("* Failed to connected to broker. Trying again in 2 seconds.");
       delay(2000);
@@ -174,8 +195,94 @@ LCD.setCursor(0, 1);
 LCD.print("T:" + String(data.temperature, 2) + "C");
 MQTT.publish(TOPIC_PUBLISH_TEMPERATURE, String(data.temperature, 2).c_str());
     
-
+LCD.setCursor(9,1);
+LCD.print(abacate);
 
 MQTT.loop();
 delay(500); 
+}
+void regar(double type, double temp, double humi, double light){
+  double fatorLuz=fatLuz(light);
+  double fatorTemp=fatTemp(temp);
+  double fatorHumi=fatHumi(humi,type);
+  double water;
+  if(type==0){
+    water=200;
+  }
+  else if(type==1){
+    water=300;
+  }
+  else{
+    water=400;
+  }
+  double rega=(fatorLuz*0.33+fatorTemp*0.33+fatorHumi*0.34)*water;
+  abacate=rega;
+  //MQTT.publish(TOPIC_PUBLISH_REGA,String(rega).c_str());
+}
+double fatLuz(double a) {
+    // Define the minimum and maximum values for a
+    double minA = 0;
+    double maxA = 100000;
+
+    // Define the minimum and maximum values for b
+    double minB = 0.5;
+    double maxB = 1.2;
+
+    // Map the value of a to the range [0, 1]
+    double normalizedA = (a - minA) / (maxA - minA);
+
+    // Map the normalized value to the range [minB, maxB]
+    double b = minB + normalizedA * (maxB - minB);
+
+    // Ensure that the result is within the specified range
+    return constrain(b, minB, maxB);
+}
+
+double fatTemp(double a) {
+    // Define the minimum and maximum values for a
+    double minA = 10;
+    double maxA = 40;
+
+    // Define the minimum and maximum values for b
+    double minB = 0.7;
+    double maxB = 1.2;
+
+    // Map the value of a to the range [0, 1]
+    double normalizedA = (a - minA) / (maxA - minA);
+
+    // Map the normalized value to the range [minB, maxB]
+    double b = minB + normalizedA * (maxB - minB);
+
+    // Ensure that the result is within the specified range
+    return constrain(b, minB, maxB);
+}
+
+double fatHumi(double a,double t) {
+    // Define the minimum and maximum values for a
+    double minA = 10;
+    double maxA = 45;
+
+    // Define the minimum and maximum values for b
+    double minB, maxB;
+
+    if (t == 0) {
+        minB = 1;
+        maxB = 0.1;
+    } else if (t == 1) {
+        minB = 1.5;
+        maxB = 0.5;
+    } else {
+        minB = 2;
+        maxB = 0.7;
+    }
+
+    // Map the value of a to the range [0, 1]
+    double normalizedA = (a - minA) / (maxA - minA);
+
+    // Map the normalized value to the range [minB, maxB]
+    double b = minB + normalizedA * (maxB - minB);
+
+    // Ensure that the result is within the specified range
+    return constrain(b, minB, maxB);
+
 }

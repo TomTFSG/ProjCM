@@ -1,4 +1,6 @@
-package com.example.projeto;
+package com.example.projeto.viewmodels;
+
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -10,6 +12,7 @@ public class SharedViewModel extends ViewModel {
     private MutableLiveData<Double> temperatura = new MutableLiveData<>();
 
     public LiveData<Double> getHumidade() {
+        Log.d("Humido", "Humidade changed: " + humidade.getValue());
         return humidade;
     }
 

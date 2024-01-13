@@ -1,0 +1,242 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:baselineAligned="false"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <Button
+        android:id="@+id/buttonPlants"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/button1"
+        android:fontFamily="@font/montserrat_alternates_medium"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:text="Plants"
+
+
+        android:textColor="#DCA6A9"
+        android:textSize="15dp"
+        app:layout_constraintBottom_toTopOf="@+id/tituloFrag"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.096"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/tituloFrag"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="64dp"
+        android:layout_marginEnd="30dp"
+        android:fontFamily="@font/montserrat_alternates_bold"
+
+        android:text="@string/moist_soil_plant"
+        android:textAlignment="center"
+        android:textColor="#FAB0B9"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+
+    <ImageView
+        android:id="@+id/imagemPlanta"
+        android:layout_width="341dp"
+        android:layout_height="393dp"
+        android:layout_marginEnd="-40dp"
+        android:layout_marginBottom="-40dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/img_humido" />
+
+    <ImageButton
+        android:id="@+id/imageButtonHistorico"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="54dp"
+        android:background="@color/white"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/infoLayout"
+        app:srcCompat="@drawable/botaohistorico" />
+
+    <LinearLayout
+        android:id="@+id/infoLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tituloFrag">
+
+        <LinearLayout
+            android:id="@+id/lightInfo"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/rectlight"
+            android:orientation="vertical"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@+id/Tituloluz"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_alternates_medium"
+                android:paddingStart="5dp"
+                android:paddingTop="5dp"
+                android:text="Light"
+                android:textAlignment="textStart"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                tools:layout_editor_absoluteX="50dp"
+
+                />
+
+            <TextView
+                android:id="@+id/luz"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_alternates_bold"
+                android:text="65%"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="34sp"
+                tools:layout_editor_absoluteX="50dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/tempInfo"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/recttemp"
+            android:orientation="vertical"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@+id/Titulotemp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_alternates_medium"
+                android:paddingStart="5dp"
+                android:paddingTop="5dp"
+                android:text="Temp"
+                android:textAlignment="textStart"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                tools:layout_editor_absoluteX="34dp"
+                tools:layout_editor_absoluteY="182dp" />
+
+            <TextView
+                android:id="@+id/temp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_alternates_bold"
+                android:paddingTop="5dp"
+                android:text="10º"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="34sp"
+                tools:layout_editor_absoluteX="34dp"
+                tools:layout_editor_absoluteY="182dp" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/soilInfo"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:background="@drawable/rectmoist"
+            android:orientation="vertical"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@+id/Titulohumi"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_alternates_medium"
+                android:paddingStart="5dp"
+                android:paddingTop="5dp"
+                android:text="Soil Moisture"
+                android:textAlignment="textStart"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                tools:layout_editor_absoluteX="50dp"
+
+                tools:layout_editor_absoluteY="487dp" />
+
+            <TextView
+                android:id="@+id/humi"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_alternates_bold"
+                android:paddingTop="5dp"
+                android:text="90%"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="34sp"
+                tools:layout_editor_absoluteX="50dp"
+                tools:layout_editor_absoluteY="487dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/horarioLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="48dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tituloFrag">
+
+        <TextView
+            android:id="@+id/TituloHora"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:fontFamily="@font/montserrat_alternates_semibold"
+            android:text="Watering time"
+            android:textAlignment="center"
+            android:textColor="#FAB0B9"
+            android:textSize="16dp" />
+
+        <TextView
+            android:id="@+id/Horas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:fontFamily="@font/montserrat_alternates_medium"
+            android:text="09:30h"
+            android:textAlignment="center"
+            android:textColor="#0A5845"
+            android:textSize="42sp" />
+
+        <Button
+            android:id="@+id/btnGotoHorario"
+            android:layout_width="65dp"
+            android:layout_height="34dp"
+            android:background="@drawable/button1"
+            android:fontFamily="@font/montserrat_alternates_bold"
+            android:text="EDIT"
+            android:textColor="@color/rosafundo" />
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
