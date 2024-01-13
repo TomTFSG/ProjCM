@@ -29,14 +29,15 @@ public class Landing extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Button start= getView().findViewById(R.id.start);
+        View view = inflater.inflate(R.layout.fragment_landing, container, false);
+        Button start = view.findViewById(R.id.ButtonS);
         start.setOnClickListener(v -> getActivity().getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.frame, Menu.class,null)
+                .replace(R.id.frame, Menu.class, null)
                 .addToBackStack(null)
                 .commit()
         );
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_landing, container, false);
+        return view;
     }
 }
