@@ -53,7 +53,7 @@ public class HoraFrag extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_horafrag, container, false);
         MainActivity main=(MainActivity) getActivity();
-        alarmManager=main.alarmManager;
+        alarmManager = main.alarmManager;
         pendingIntent = main.pendingIntent;
 
         //////////////////////////////////////////////////
@@ -73,35 +73,13 @@ public class HoraFrag extends Fragment {
 
         //////////////////////////////////////////////////
         // Voltar para trás (botão de save)
-        Button saveB = view.findViewById(R.id.buttonSaveTime);
-        saveB.setOnClickListener(v -> {
+        Button saveBtn = view.findViewById(R.id.buttonSaveTime);
+        saveBtn.setOnClickListener(v -> {
             int h = hPicker.getValue();
             int m = mPicker.getValue();
 
             dbHelper = new FeedReaderDbHelper(getContext());
-            db = dbHelper.getWritableDatabase();
-            ContentValues values = new ContentValues();
-            values.put(FeedReaderDbHelper.COLUMN_NAME_HORAS, h);
-            values.put(FeedReaderDbHelper.COLUMN_NAME_MINUTOS, m);
-
-            String selection = FeedReaderDbHelper.COLUMN_NAME_ATUAL + " = ?";
-            String[] selectionArgs = { "1" };
-
-            int rowsUpdated = db.update(
-                    FeedReaderDbHelper.TABLE_NAME,
-                    values,
-                    selection,
-                    selectionArgs
-            );
-
-            if (rowsUpdated > 0) {
-                Log.i(TAG, "Values updated successfully");
-            } else {
-                Log.e(TAG, "Error updating values in the database");
-            }
-
-
-            Log.i("HORAS","HORARIO MARCADO PARA AS: "+h+":"+m);
+            dbHelper.setHoras(h, m);
             updateAlarmTime(h,m);
             getActivity().getSupportFragmentManager().popBackStack();
         });
@@ -109,7 +87,6 @@ public class HoraFrag extends Fragment {
         return view;
     }
     private void updateAlarmTime(int h, int m) {
-        // Update alarm time logic here
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.set(Calendar.HOUR_OF_DAY, h);

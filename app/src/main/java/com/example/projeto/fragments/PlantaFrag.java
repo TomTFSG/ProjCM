@@ -89,8 +89,9 @@ public class PlantaFrag extends Fragment {
         int hora = dbHelper.getValueFromColumnName(FeedReaderDbHelper.COLUMN_NAME_HORAS);
         int minutos = dbHelper.getValueFromColumnName(FeedReaderDbHelper.COLUMN_NAME_MINUTOS);
 
-        tHoras.setText(hora+":"+minutos+"h");
-        Log.w("H",hora+":"+minutos+"h");
+        String horarioString = hora + ":" + ((minutos < 10) ? "0" : "") + minutos + "h";
+        tHoras.setText(horarioString);
+        Log.w("H",horarioString);
 
 
         ////////////////////////////////////////////////////////////////////////////////
