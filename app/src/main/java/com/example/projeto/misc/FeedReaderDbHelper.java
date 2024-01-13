@@ -1,6 +1,7 @@
 package com.example.projeto.misc;
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -74,5 +75,28 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
         }
 
         return value;
+    }
+
+
+    public void setHoras(int horas, int minutos){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_NAME_HORAS, horas);
+        values.put(COLUMN_NAME_MINUTOS, minutos);
+
+        int rowsUpdated = db.update(
+                FeedReaderDbHelper.TABLE_NAME,
+                values,
+                null,
+                null
+        );
+
+        if (rowsUpdated > 0) {
+            Log.i(TAG,  "Horas:minutos colocadas com sucesso");
+            Log.i("HORAS","HORARIO MARCADO PARA AS: " + horas + ":" + minutos);
+        } else {
+            Log.e(TAG, "Erro a colocar horas:minutos");
+        }
     }
 }

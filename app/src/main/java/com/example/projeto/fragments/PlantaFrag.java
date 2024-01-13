@@ -88,21 +88,10 @@ public class PlantaFrag extends Fragment {
         TextView tHoras = view.findViewById(R.id.Horas);
         int hora = dbHelper.getValueFromColumnName(FeedReaderDbHelper.COLUMN_NAME_HORAS);
         int minutos = dbHelper.getValueFromColumnName(FeedReaderDbHelper.COLUMN_NAME_MINUTOS);
-        String h,m;
-        if(hora<10){
-            h=0+String.valueOf(hora);
-        }
-        else {
-            h = String.valueOf(hora);
-        }
-        if(minutos<10){
-            m=0+String.valueOf(minutos);
-        }
-        else {
-            m = String.valueOf(minutos);
-        }
-        tHoras.setText(h+":"+m+"h");
-        Log.w("H",h+":"+m+"h");
+
+        String horarioString = hora + ":" + ((minutos < 10) ? "0" : "") + minutos + "h";
+        tHoras.setText(horarioString);
+        Log.w("H",horarioString);
 
 
         ////////////////////////////////////////////////////////////////////////////////

@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-public class AlarmReceiver extends BroadcastReceiver {
+public class    AlarmReceiver extends BroadcastReceiver {
     MqttHelper helper;
     String brookerUri;
     String clientId;

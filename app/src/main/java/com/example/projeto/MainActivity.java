@@ -127,7 +127,6 @@ public class MainActivity extends AppCompatActivity {
             public void messageArrived(String topic, MqttMessage message) throws Exception {
                 String payload=new String(message.getPayload());
                 double valor = Double.parseDouble(payload);
-                //Log.d(TAG,"T: "+topic+ " P: "+payload);
 
                 ContentValues values = new ContentValues();
                 String key = "";
