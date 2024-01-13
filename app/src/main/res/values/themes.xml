@@ -4,6 +4,16 @@
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
+    
+    <style name="NumberPickerTheme" parent="Theme.AppCompat.Light">
+        <item name="android:colorAccent">@color/white</item>
+        <item name="android:colorControlNormal">@color/transparent</item>
+
+
+        <item name="android:textSize">42sp</item>
+        <item name="android:fontFamily">@font/montserrat_alternates_medium</item>
+        <item name="android:textColorPrimary">@color/verdeclaronaotaoclaro</item>
+    </style>
 
     <style name="Theme.Projeto" parent="Base.Theme.Projeto" />
 </resources>

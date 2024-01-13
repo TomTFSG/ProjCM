@@ -36,8 +36,8 @@ public class MainActivity extends AppCompatActivity {
     FeedReaderDbHelper dbHelper;
     SQLiteDatabase db;
     MqttHelper helper;
-    String brookerUri;
-    String clientId;
+    String brookerUri = "tcp://broker.hivemq.com:1883";
+    String clientId = "userAndroid";
     Double temperatura;
     Double humidade;
     Double luz;
@@ -50,8 +50,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setContentView(R.layout.activity_main);
+
+        helper = new MqttHelper(getApplicationContext(), brookerUri, clientId);
+        Log.w(TAG,"HELLO");
         dbHelper = new FeedReaderDbHelper(getApplicationContext());
         db = dbHelper.getWritableDatabase(); // Use getWritableDatabase() instead of getReadableDatabase()
+
+        sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);
+
+
+
         ContentValues values = new ContentValues();
         values.put(FeedReaderDbHelper.COLUMN_NAME_ATUAL, 1); // Use an appropriate integer value
         values.put(FeedReaderDbHelper.COLUMN_NAME_HORAS, 17);
@@ -68,25 +77,19 @@ public class MainActivity extends AppCompatActivity {
             Log.e(TAG, "Error inserting value into the database");
         }
 
-        sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);
-        setContentView(R.layout.activity_main);
-        brookerUri="tcp://broker.hivemq.com:1883";
-        clientId="userAndroid";
-        helper =new MqttHelper(getApplicationContext(),brookerUri,clientId);
-        Log.w(TAG,"HELLO");
 
+        ////////////////////////////////////////////////////////
         //ALARME PARA REGAR AS PLANTAS
-        Context context=getApplicationContext();
+        Context context = getApplicationContext();
         alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent alarmIntent = new Intent(context, AlarmReceiver.class);
         pendingIntent = PendingIntent.getBroadcast(context, 0, alarmIntent, PendingIntent.FLAG_IMMUTABLE);
 
 
+        ////////////////////////////////////////////////////////
         //HORAS E MINUTOS
-        String[] horasProjection = {FeedReaderDbHelper.COLUMN_NAME_HORAS};
-        hora = getValueFromDatabase(db, horasProjection, FeedReaderDbHelper.COLUMN_NAME_HORAS);
-        String[] minutosProjection = {FeedReaderDbHelper.COLUMN_NAME_MINUTOS};
-        minutos = getValueFromDatabase(db, minutosProjection, FeedReaderDbHelper.COLUMN_NAME_MINUTOS);
+        hora = dbHelper.getValueFromColumnName(FeedReaderDbHelper.COLUMN_NAME_HORAS);
+        minutos = dbHelper.getValueFromColumnName(FeedReaderDbHelper.COLUMN_NAME_MINUTOS);
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
@@ -115,42 +118,42 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void connectionLost(Throwable cause) {
-
-            }
+            public void connectionLost(Throwable cause) {}
 
             @Override
             public void messageArrived(String topic, MqttMessage message) throws Exception {
                 String payload=new String(message.getPayload());
-                double valor=Double.parseDouble(payload);
+                double valor = Double.parseDouble(payload);
                 //Log.d(TAG,"T: "+topic+ " P: "+payload);
+
+                ContentValues values = new ContentValues();
+                String key = "";
 
 
                 if (topic.equals("temperature")) {
-                    ContentValues values = new ContentValues();
-                    values.put(FeedReaderDbHelper.COLUMN_NAME_TIME, getCurrentTime());
-                    values.put(FeedReaderDbHelper.COLUMN_NAME_TEMP, Double.toString(valor));
-                    db.insert(FeedReaderDbHelper.TABLE_NAME, null, values);
+                    key = FeedReaderDbHelper.COLUMN_NAME_TEMP;
                     sharedViewModel.setTemperatura(valor);
                     temperatura = valor;
                 } else if (topic.equals("humidity")) {
-                    ContentValues values = new ContentValues();
-                    values.put(FeedReaderDbHelper.COLUMN_NAME_TIME, getCurrentTime());
-                    values.put(FeedReaderDbHelper.COLUMN_NAME_HUMI, Double.toString(valor));
-                    db.insert(FeedReaderDbHelper.TABLE_NAME, null, values);
+                    key = FeedReaderDbHelper.COLUMN_NAME_HUMI;
                     sharedViewModel.setHumidade(valor);
                     humidade = valor;
                 } else if (topic.equals("light")) {
-                    // Handle light topic
-                    sharedViewModel.setLuz(valor);
+                    key = FeedReaderDbHelper.COLUMN_NAME_LIGHT;
+                    final double maxLUX = Math.pow(10, 5);
+                    // escala logaritmica
+                    final double valEscalada = 100 * (Math.log(valor + 0.9) / Math.log(maxLUX + 0.9));
+                    sharedViewModel.setLuz(Math.round(valEscalada * 10) / 10.0);
                     luz = valor;
                 }
+
+                values.put(FeedReaderDbHelper.COLUMN_NAME_TIME, getCurrentTime());
+                values.put(key, Double.toString(valor));
+                db.insert(FeedReaderDbHelper.TABLE_NAME, null, values);
             }
 
             @Override
-            public void deliveryComplete(IMqttDeliveryToken token) {
-
-            }
+            public void deliveryComplete(IMqttDeliveryToken token) {}
         });
         /*
         try {
@@ -167,33 +170,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    ///////////    ///////////    ///////////    ///////////    ///////////
+    ///////////    ///////////    ///////////    ///////////    ///////////
+    ///////////    ///////////    ///////////    ///////////    ///////////
+
     private String getCurrentTime() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.getDefault());
         return sdf.format(new Date());
     }
-    private int getValueFromDatabase(SQLiteDatabase db, String[] projection, String columnName) {
-        Cursor cursor = db.query(
-                FeedReaderDbHelper.TABLE_NAME,
-                projection,
-                null,
-                null,
-                null,
-                null,
-                null
-        );
-
-        int value = 0;
-
-        if (cursor != null && cursor.moveToFirst()) {
-            int columnIndex = cursor.getColumnIndexOrThrow(columnName);
-            value = cursor.getInt(columnIndex);
-            cursor.close();
-        } else {
-            Log.e(TAG, "Error reading value from the database");
-        }
-
-        return value;
-    }
-
-
 }

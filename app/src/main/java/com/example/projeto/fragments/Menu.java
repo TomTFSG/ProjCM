@@ -28,6 +28,10 @@ public class Menu extends Fragment {
 
     public Menu() {}
 
+    ///////////    ///////////    ///////////    ///////////    ///////////
+    ///////////    ///////////    ///////////    ///////////    ///////////
+    ///////////    ///////////    ///////////    ///////////    ///////////
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +39,10 @@ public class Menu extends Fragment {
         dbHelper = new FeedReaderDbHelper(getContext());
         db = dbHelper.getWritableDatabase(); // Use getWritableDatabase() instead of getReadableDatabase()
     }
+
+    ///////////    ///////////    ///////////    ///////////    ///////////
+    ///////////    ///////////    ///////////    ///////////    ///////////
+    ///////////    ///////////    ///////////    ///////////    ///////////
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -60,7 +68,7 @@ public class Menu extends Fragment {
                     setTipoPlanta(k);
                     getActivity().getSupportFragmentManager()
                             .beginTransaction()
-                            .replace(R.id.frame, Humido.class, null)
+                            .replace(R.id.frame, PlantaFrag.class, null)
                             .addToBackStack(null)
                             .commit();
                     }
@@ -71,6 +79,9 @@ public class Menu extends Fragment {
     }
 
 
+    ///////////    ///////////    ///////////    ///////////    ///////////
+    ///////////    ///////////    ///////////    ///////////    ///////////
+    ///////////    ///////////    ///////////    ///////////    ///////////
     private void setTipoPlanta(int tipo){
         ContentValues values = new ContentValues();
         values.put(FeedReaderDbHelper.COLUMN_NAME_ATUAL, tipo); // Use an appropriate integer value

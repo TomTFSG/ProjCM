@@ -6,13 +6,19 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.NumberPicker;
+import android.widget.TextView;
+
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.projeto.misc.FeedReaderDbHelper;
@@ -21,24 +27,37 @@ import com.example.projeto.R;
 
 import java.util.Calendar;
 
-public class SetTime extends Fragment {
+public class HoraFrag extends Fragment {
 
     FeedReaderDbHelper dbHelper;
     AlarmManager alarmManager;
     SQLiteDatabase db;
     private PendingIntent pendingIntent;
 
-    public SetTime() {
+    public HoraFrag() {
         // Required empty public constructor
+    }
+
+    private void changeSelected(TextView v){
+        Typeface MontserratAlternates_SEMIBOLD = Typeface.createFromAsset(
+                getActivity().getAssets(),
+                "fonts/MontserratAlternates-SemiBold.ttf"
+        );
+
+        v.setTextColor(getResources().getColor(R.color.verdeescuro));
+        v.setTypeface(MontserratAlternates_SEMIBOLD);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_hora, container, false);
+        View view = inflater.inflate(R.layout.fragment_horafrag, container, false);
         MainActivity main=(MainActivity) getActivity();
         alarmManager=main.alarmManager;
         pendingIntent = main.pendingIntent;
+
+        //////////////////////////////////////////////////
+        // Number Pickers
         //HORAS
         NumberPicker hPicker = view.findViewById(R.id.numPickerHora);  // Replace with your NumberPicker ID
         hPicker.setMinValue(0);
@@ -47,41 +66,44 @@ public class SetTime extends Fragment {
         NumberPicker mPicker = view.findViewById(R.id.numPickerMin);  // Replace with your NumberPicker ID
         mPicker.setMinValue(0);
         mPicker.setMaxValue(59);
-        
-        Button saveB=view.findViewById(R.id.buttonSaveTime);
-        saveB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int h=hPicker.getValue();
-                int m=mPicker.getValue();
-
-                dbHelper = new FeedReaderDbHelper(getContext());
-                db = dbHelper.getWritableDatabase();
-                ContentValues values = new ContentValues();
-                values.put(FeedReaderDbHelper.COLUMN_NAME_HORAS, h);
-                values.put(FeedReaderDbHelper.COLUMN_NAME_MINUTOS, m);
-
-                String selection = FeedReaderDbHelper.COLUMN_NAME_ATUAL + " = ?";
-                String[] selectionArgs = { "1" };
-
-                int rowsUpdated = db.update(
-                        FeedReaderDbHelper.TABLE_NAME,
-                        values,
-                        selection,
-                        selectionArgs
-                );
-
-                if (rowsUpdated > 0) {
-                    Log.i(TAG, "Values updated successfully");
-                } else {
-                    Log.e(TAG, "Error updating values in the database");
-                }
 
 
-                Log.i("HORAS","HORARIO MARCADO PARA AS: "+h+":"+m);
-                updateAlarmTime(h,m);
-                getActivity().getSupportFragmentManager().popBackStack();
+
+
+
+        //////////////////////////////////////////////////
+        // Voltar para trás (botão de save)
+        Button saveB = view.findViewById(R.id.buttonSaveTime);
+        saveB.setOnClickListener(v -> {
+            int h = hPicker.getValue();
+            int m = mPicker.getValue();
+
+            dbHelper = new FeedReaderDbHelper(getContext());
+            db = dbHelper.getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put(FeedReaderDbHelper.COLUMN_NAME_HORAS, h);
+            values.put(FeedReaderDbHelper.COLUMN_NAME_MINUTOS, m);
+
+            String selection = FeedReaderDbHelper.COLUMN_NAME_ATUAL + " = ?";
+            String[] selectionArgs = { "1" };
+
+            int rowsUpdated = db.update(
+                    FeedReaderDbHelper.TABLE_NAME,
+                    values,
+                    selection,
+                    selectionArgs
+            );
+
+            if (rowsUpdated > 0) {
+                Log.i(TAG, "Values updated successfully");
+            } else {
+                Log.e(TAG, "Error updating values in the database");
             }
+
+
+            Log.i("HORAS","HORARIO MARCADO PARA AS: "+h+":"+m);
+            updateAlarmTime(h,m);
+            getActivity().getSupportFragmentManager().popBackStack();
         });
 
         return view;

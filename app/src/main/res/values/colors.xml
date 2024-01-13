@@ -2,5 +2,10 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="rosa.fundo">#F3D9CC</color>
+    <color name="transparent">#00FFFFFF</color>
+    <color name="rosafundo">#F3D9CC</color>
+    <color name="rosaescuro">#C3878F</color>
+    <color name="verdeescuro">#0a5845</color>
+    <color name="verdemeio">#53785E</color>
+    <color name="verdeclaronaotaoclaro">#9AB676</color>
 </resources>
