@@ -9,14 +9,11 @@
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
         android:layout_marginTop="48dp"
-        android:fontFamily="@font/montserrat_alternates_bold"
-        android:text="WHAT TYPE OF PLANT DO YOU WANT TO MONITOR: "
-        android:textAlignment="center"
-        android:textColor="@color/verdemeio"
-        android:textSize="24sp"
+        android:text="WHAT TYPE OF PLANT DO YOU WANT TO MONITOR?"
+        android:theme="@style/TituloTheme"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
