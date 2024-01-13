@@ -4,11 +4,14 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
+import androidx.core.widget.TextViewCompat;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.anychart.AnyChart;
 import com.anychart.AnyChartView;
@@ -24,18 +27,17 @@ import com.anychart.enums.TooltipPositionMode;
 import com.anychart.graphics.vector.Stroke;
 import com.example.projeto.misc.FeedReaderDbHelper;
 import com.example.projeto.R;
+import com.example.projeto.misc.forHistorico.LineFromHistoryGraph;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Historico extends Fragment {
 
-    List<DataEntry> humidityData;
-    List<DataEntry> temperatureData;  // Initialize temperatureData
+    List<DataEntry> DataLuz, DataTemperatura, DataHumidade;
     Cartesian line;
     AnyChartView graph;
-    Line series1;
-    Line series2;
+    LineFromHistoryGraph LinhaLuz, LinhaTemperatura, LinhaHumidade;
     FeedReaderDbHelper dbHelper;
     SQLiteDatabase db;
     View view;
@@ -47,8 +49,9 @@ public class Historico extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        temperatureData = new ArrayList<>();
-        humidityData = new ArrayList<>();
+        DataLuz = new ArrayList<>();
+        DataTemperatura = new ArrayList<>();
+        DataHumidade = new ArrayList<>();
     }
 
     @Override
@@ -62,6 +65,7 @@ public class Historico extends Fragment {
 
         String[] projection = {
                 FeedReaderDbHelper.COLUMN_NAME_TIME,
+                FeedReaderDbHelper.COLUMN_NAME_LIGHT,
                 FeedReaderDbHelper.COLUMN_NAME_TEMP,
                 FeedReaderDbHelper.COLUMN_NAME_HUMI
         };
@@ -79,16 +83,33 @@ public class Historico extends Fragment {
         );
 
         while (cursor.moveToNext()) {
-            String time = cursor.getString(cursor.getColumnIndexOrThrow(FeedReaderDbHelper.COLUMN_NAME_TIME));
-            String temp = cursor.getString(cursor.getColumnIndexOrThrow(FeedReaderDbHelper.COLUMN_NAME_TEMP));
-            String humi = cursor.getString(cursor.getColumnIndexOrThrow(FeedReaderDbHelper.COLUMN_NAME_HUMI));
+            LinearLayout[] dataLayouts = new LinearLayout[]{
+                    (LinearLayout) view.findViewById(R.id.dataDateLayout),
+                    (LinearLayout) view.findViewById(R.id.dataLuzLayout),
+                    (LinearLayout) view.findViewById(R.id.dataHumidadeLayout),
+                    (LinearLayout) view.findViewById(R.id.dataTempLayout)
+            };
+                    // // // // // colocar dados
+            for(int i = 0; i < projection.length; i++){
+                String coluna = projection[i];
+                String val = cursor.getString(cursor.getColumnIndexOrThrow(coluna));
+                String time = cursor.getString(cursor.getColumnIndexOrThrow(projection[0]));
 
-            if (temp != null) {
-                temperatureData.add(new ValueDataEntry(time, Double.parseDouble(temp)));
+                if(val != null && time != null){
+                    TextView novoDadoTextView = new TextView(getContext());
+                    novoDadoTextView.setText(val);
+                    dataLayouts[i].addView(novoDadoTextView);
+
+                    TextViewCompat.setTextAppearance(
+                            novoDadoTextView,
+                            (i == 0) ? R.style.HistoryColumnDateItemTheme : R.style.HistoryColumnValuesItemTheme
+                        );
+                    if(i == 1) DataLuz.add(new ValueDataEntry(time, Double.parseDouble(val)));
+                    else if(i == 2) DataHumidade.add(new ValueDataEntry(time, Double.parseDouble(val)));
+                    else if(i == 3) DataTemperatura.add(new ValueDataEntry(time, Double.parseDouble(val)));
+                }
             }
-            if (humi != null) {
-                humidityData.add(new ValueDataEntry(time, Double.parseDouble(humi)));
-            }
+
         }
         cursor.close();
         setupChart();
@@ -102,7 +123,7 @@ public class Historico extends Fragment {
 
 
         line = AnyChart.line();
-        line.background().fill("#2B2B2B");
+        line.background().fill("black");
         line.animation(false);
 
         line.padding(10d, 20d, 5d, 20d);
@@ -114,12 +135,36 @@ public class Historico extends Fragment {
 
         line.tooltip().positionMode(TooltipPositionMode.POINT);
         line.title("Temperatura e Humidade");
-        line.title().fontColor("white");
+        line.title().fontColor("black");
         line.yAxis(0).title("Valor");
         line.yAxis(0).title().fontColor("white");
         line.xAxis(0).labels().padding(5d, 5d, 5d, 5d);
-        line.xAxis(0).labels().fontColor("white");
+        line.xAxis(0).labels().fontColor("black");
 
+        LinhaLuz = new LineFromHistoryGraph(
+                "#FAB0B9",
+                "Light (%)",
+                "{ x: 'x', value: 'temperature' }",
+                DataTemperatura
+        );
+        LinhaLuz.doLineOnCartesian(line);
+        //
+        LinhaTemperatura = new LineFromHistoryGraph(
+                "#FAB0B9",
+                "Temperature (ºC)",
+                "{ x: 'x', value: 'temperature' }",
+                DataTemperatura
+        );
+        LinhaTemperatura.doLineOnCartesian(line);
+        //
+        LinhaHumidade = new LineFromHistoryGraph(
+                "#FAB0B9",
+                "Soil Moisture (%)",
+                "{ x: 'x', value: 'temperature' }",
+                DataTemperatura
+        );
+        LinhaHumidade.doLineOnCartesian(line);
+        /*
         Set set = Set.instantiate();
         set.data(temperatureData);
         Set setH = Set.instantiate();
@@ -128,7 +173,7 @@ public class Historico extends Fragment {
         Mapping series2Mapping = setH.mapAs("{ x: 'x', value: 'humidade' }");
         series1 = line.line(series1Mapping);
         series1.name("Temperatura (ºC)");
-        series1.stroke("aquamarine");
+        series1.stroke("#FAB0B9");
         series1.hovered().markers().enabled(true);
         series1.hovered().markers()
                 .type(MarkerType.CIRCLE)
@@ -139,6 +184,7 @@ public class Historico extends Fragment {
                 .offsetX(5d)
                 .offsetY(5d);
 
+        /////////////////////////////////
         series2 = line.line(series2Mapping);
         series2.name("Humidade (%)");
         series2.stroke("magenta");
@@ -151,6 +197,8 @@ public class Historico extends Fragment {
                 .anchor(Anchor.LEFT_CENTER)
                 .offsetX(5d)
                 .offsetY(5d);
+
+         */
         line.legend().enabled(true);
         line.legend().fontSize(13d);
         line.legend().fontColor("white");
