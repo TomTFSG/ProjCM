@@ -1,11 +1,22 @@
 package com.example.projeto.misc;
 
+import android.app.AlarmManager;
 import android.app.IntentService;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.PowerManager;
 import android.util.Log;
+
+import androidx.core.app.NotificationCompat;
+
+import com.example.projeto.MainActivity;
+import com.example.projeto.R;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
@@ -13,6 +24,8 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Calendar;
 
 public class MessageReceiver extends IntentService {
     private static final String TAG = "MessageReceiver";
@@ -25,10 +38,6 @@ public class MessageReceiver extends IntentService {
     Double type;
     FeedReaderDbHelper dbHelper;
     SQLiteDatabase db;
-    private static final String CHANNEL_ID = "Regador9000";
-
-
-
 
     public MessageReceiver() {
         super("MessageReceiver");
@@ -131,15 +140,38 @@ public class MessageReceiver extends IntentService {
                         publishMqttMessage();
                     } else if(topic.equals("rega") && payload != null){
                         Log.w("REGADO",payload+"ml regados");
-                        /*
-                        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
-                                .setSmallIcon(R.drawable.logo2)
-                                .setContentTitle("REGADOR 9000")
-                                .setContentText("Regado com "+payload+"ml de água")
-                                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                        disconnectFromMqttBroker();
+                        sendNotification(payload);
+                        releaseWakeLock();
 
-                        */
-                        //stopSelf();
+                        AlarmManager alarmManager;
+                        PendingIntent pendingIntent;
+                        int hora;
+                        int minutos;
+                        Context context = getApplicationContext();
+                        alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                        Intent alarmIntent = new Intent(context, AlarmReceiver.class);
+                        pendingIntent = PendingIntent.getBroadcast(context, 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                        hora = dbHelper.getValueFromColumnName(FeedReaderDbHelper.COLUMN_NAME_HORAS);
+                        minutos = dbHelper.getValueFromColumnName(FeedReaderDbHelper.COLUMN_NAME_MINUTOS);
+                        boolean isAlarmSet = (PendingIntent.getBroadcast(context, 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT) != null);
+
+                        if (!isAlarmSet) {
+                            Calendar calendar = Calendar.getInstance();
+                            calendar.setTimeInMillis(System.currentTimeMillis());
+                            calendar.set(Calendar.HOUR_OF_DAY, hora);
+                            calendar.set(Calendar.MINUTE, minutos);
+
+                            if (calendar.getTimeInMillis() <= System.currentTimeMillis()) {
+                                calendar.add(Calendar.DAY_OF_MONTH, 1);
+                            }
+
+                            long triggerTime = calendar.getTimeInMillis();
+                            alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent);
+                        }
+
+
                     }
                 }
 
@@ -185,5 +217,34 @@ public class MessageReceiver extends IntentService {
                 Log.e(TAG, "Error creating JSON payload", e);
             }
         }
+    }
+    private void sendNotification(String m){
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        String channelId = "rega_notif";
+        String channelName = "Regador 2024";
+        int notificationId = 1;
+
+        // Check if the device is running Android Oreo or higher, and create a notification channel if needed.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
+            notificationManager.createNotificationChannel(channel);
+        }
+
+        // Create an Intent to launch when the notification is tapped.
+        Intent intent = new Intent(this, MainActivity.class);  // Replace YourActivity with the appropriate activity.
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+
+        // Build the notification.
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, channelId)
+                .setSmallIcon(R.drawable.logo_notif)
+                .setContentTitle("Regador 9000")
+                .setContentText("Your plant was been watered with "+m+"ml of water.")
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent);
+
+        // Show the notification.
+        notificationManager.notify(notificationId, notificationBuilder.build());
+
     }
 }

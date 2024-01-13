@@ -43,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
     Double luz;
     public AlarmManager alarmManager;
     public PendingIntent pendingIntent;
+    boolean menuFragmentAdded = false;
+
 
     int hora;
     int minutos;
@@ -110,7 +112,8 @@ public class MainActivity extends AppCompatActivity {
                 helper.subscribe("humidity");
                 helper.subscribe("light");
                 helper.subscribe("rega");
-                if (savedInstanceState == null) {
+                if (savedInstanceState == null && !menuFragmentAdded) {
+                    menuFragmentAdded=true;
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.frame, new Menu(),null)
                             .commit();
