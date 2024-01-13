@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
@@ -84,6 +85,14 @@ public class HoraFrag extends Fragment {
             getActivity().getSupportFragmentManager().popBackStack();
         });
 
+
+        ImageButton back=view.findViewById(R.id.buttonBack);
+        back.setOnClickListener(v -> getActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.frame, PlantaFrag.class,null)
+                .addToBackStack(null)
+                .commit()
+        );
         return view;
     }
     private void updateAlarmTime(int h, int m) {

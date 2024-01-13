@@ -59,7 +59,11 @@ public class PlantaFrag extends Fragment {
         ////////////////////////////////////////////////////////////////////////////////
         // ir buscar o tipo da planta
         int tipoPlanta = dbHelper.getValueFromColumnName(FeedReaderDbHelper.COLUMN_NAME_ATUAL);
-
+        if(tipoPlanta>2){
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.frame, new Landing(),null)
+                    .commit();
+        }
         ////////////////////////////////////////////////////////////////////////////////
         // imagem da planta em causa (consoante o tipo)
         ImageView imagemPlanta = view.findViewById(R.id.imagemPlanta);
@@ -135,6 +139,13 @@ public class PlantaFrag extends Fragment {
         hist.setOnClickListener(v -> getActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.frame, Historico.class,null)
+                .addToBackStack(null)
+                .commit()
+        );
+        ImageButton menuB = view.findViewById(R.id.imageButtonHistorico);
+        menuB.setOnClickListener(v -> getActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.frame,Menu.class,null)
                 .addToBackStack(null)
                 .commit()
         );

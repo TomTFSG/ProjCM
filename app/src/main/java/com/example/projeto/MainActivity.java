@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.example.projeto.fragments.Menu;
+import com.example.projeto.fragments.PlantaFrag;
 import com.example.projeto.misc.AlarmReceiver;
 import com.example.projeto.misc.FeedReaderDbHelper;
 import com.example.projeto.misc.MqttHelper;
@@ -64,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         ContentValues values = new ContentValues();
-        values.put(FeedReaderDbHelper.COLUMN_NAME_ATUAL, 1); // Use an appropriate integer value
+        values.put(FeedReaderDbHelper.COLUMN_NAME_ATUAL, 3); // Use an appropriate integer value
         values.put(FeedReaderDbHelper.COLUMN_NAME_HORAS, 17);
         values.put(FeedReaderDbHelper.COLUMN_NAME_MINUTOS, 55);
         long newRowId = db.insertWithOnConflict(
@@ -115,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
                 if (savedInstanceState == null && !menuFragmentAdded) {
                     menuFragmentAdded=true;
                     getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.frame, new Menu(),null)
+                            .replace(R.id.frame, new PlantaFrag(),null)
                             .commit();
                 }
             }

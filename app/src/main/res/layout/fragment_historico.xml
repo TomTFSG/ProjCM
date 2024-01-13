@@ -55,7 +55,9 @@
         android:paddingStart="12dp"
         android:paddingTop="24dp"
         android:paddingEnd="12dp"
-        android:weightSum="1">
+        android:weightSum="1"
+        android:gravity="center">
+
 
         <LinearLayout
             android:id="@+id/date"

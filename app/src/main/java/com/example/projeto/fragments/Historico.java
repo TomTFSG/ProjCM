@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -114,6 +115,16 @@ public class Historico extends Fragment {
         cursor.close();
         setupChart();
 
+
+        //Botao p tras
+
+        ImageButton back=view.findViewById(R.id.buttonBack);
+        back.setOnClickListener(v -> getActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.frame, PlantaFrag.class,null)
+                .addToBackStack(null)
+                .commit()
+        );
         return view;
     }
     private void setupChart(){
