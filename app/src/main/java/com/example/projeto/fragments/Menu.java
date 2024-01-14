@@ -15,14 +15,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
+import com.example.projeto.MainActivity;
 import com.example.projeto.misc.FeedReaderDbHelper;
 import com.example.projeto.R;
+import com.example.projeto.viewmodels.SharedViewModel;
 
 
 public class Menu extends Fragment {
 
     FeedReaderDbHelper dbHelper;
     SQLiteDatabase db;
+    SharedViewModel sharedViewModel;
 
 
 
@@ -47,6 +50,9 @@ public class Menu extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        MainActivity main = (MainActivity) getActivity();
+        sharedViewModel = main.sharedViewModel;// Inflate the layout for this fragment
+
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_menu, container, false);
 

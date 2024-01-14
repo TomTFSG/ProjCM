@@ -4,17 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/rosafundo"
+    android:background="#1a2b25"
+    android:gravity="center"
     android:orientation="vertical"
     tools:context=".MainActivity">
 
     <Button
         android:id="@+id/buttonBack"
-        android:layout_width="50dp"
+        android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginTop="16dp"
+        android:layout_gravity="start"
 
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="12dp"
         android:background="@drawable/x"
+        android:backgroundTint="@color/verdeclaronaotaoclaro"
         android:fontFamily="@font/montserrat_alternates_medium"
         android:textAlignment="center"
         android:textColor="#DCA6A9"
@@ -28,124 +32,42 @@
         android:id="@+id/textView10"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
-        android:text="HISTORY"
+        android:layout_marginBottom="24dp"
+        android:text="HISTORY "
+        android:textColor="@color/white"
         android:theme="@style/TituloTheme" />
 
     <com.anychart.AnyChartView
         android:id="@+id/temp"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="300dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </com.anychart.AnyChartView>
-
-    <LinearLayout
-        android:id="@+id/infoDiaria"
+    <TextView
+        android:id="@+id/textView7"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:orientation="horizontal"
-        android:paddingStart="12dp"
-        android:paddingTop="24dp"
-        android:paddingEnd="12dp"
-        android:weightSum="1"
-        android:gravity="center">
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="12dp"
+        android:fontFamily="@font/montserrat_alternates_medium"
+        android:text="watering history"
+        android:textAlignment="center"
+        android:textColor="@color/rosafundo"
+        android:textSize="16sp" />
 
-
-        <LinearLayout
-            android:id="@+id/date"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.25"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Date"
-                android:textAlignment="center"
-                android:theme="@style/HistoryColumnDateTheme" />
-
-            <LinearLayout
-                android:id="@+id/dataDateLayout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"></LinearLayout>
-
-        </LinearLayout>
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
 
         <LinearLayout
-            android:id="@+id/luz"
-            android:layout_width="0dp"
+            android:id="@+id/infoRega"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.25"
-            android:orientation="vertical">
+            android:orientation="vertical"></LinearLayout>
+    </ScrollView>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Light"
-                android:textAlignment="center"
-                android:theme="@style/HistoryColumnValuesTheme" />
-
-            <LinearLayout
-                android:id="@+id/dataLuzLayout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"></LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/temperatura"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.25"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Temp"
-                android:textAlignment="center"
-                android:theme="@style/HistoryColumnValuesTheme" />
-
-            <LinearLayout
-                android:id="@+id/dataTempLayout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"></LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/humidade"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.25"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Soil Moist."
-                android:textAlignment="center"
-                android:theme="@style/HistoryColumnValuesTheme" />
-
-            <LinearLayout
-                android:id="@+id/dataHumidadeLayout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"></LinearLayout>
-
-        </LinearLayout>
-    </LinearLayout>
 
 </LinearLayout>

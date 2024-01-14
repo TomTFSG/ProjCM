@@ -18,6 +18,7 @@ import androidx.core.app.NotificationCompat;
 
 import com.example.projeto.MainActivity;
 import com.example.projeto.R;
+import com.example.projeto.viewmodels.SharedViewModel;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
@@ -43,6 +44,7 @@ public class MessageReceiver extends IntentService {
     Double type;
     FeedReaderDbHelper dbHelper;
     SQLiteDatabase db;
+    SharedViewModel sharedViewModel;
 
     public MessageReceiver() {
         super("MessageReceiver");
@@ -50,7 +52,6 @@ public class MessageReceiver extends IntentService {
     @Override
     public void onCreate() {
         super.onCreate();
-
 
         FeedReaderDbHelper dbHelper = new FeedReaderDbHelper(getApplicationContext());
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -152,7 +153,8 @@ public class MessageReceiver extends IntentService {
                         luz = valor;
                         publishMqttMessage();
                     } else if(topic.equals("rega") && payload != null){
-                        Log.w("REGADO",payload+"ml regados");
+                        key = FeedReaderDbHelper.COLUMN_NAME_REGA;
+                        Log.w("REGADO",payload+"dl regados");
                         disconnectFromMqttBroker();
                         sendNotification(payload);
                         releaseWakeLock();
@@ -184,11 +186,11 @@ public class MessageReceiver extends IntentService {
                             alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent);
                         }
                     }
-                    if(!topic.equals("rega")){
-                        values.put(FeedReaderDbHelper.COLUMN_NAME_TIME, getCurrentTime());
-                        values.put(key, Double.toString(valor));
-                        db.insert(FeedReaderDbHelper.TABLE_NAME, null, values);
-                    }
+
+                    values.put(FeedReaderDbHelper.COLUMN_NAME_TIME, getCurrentTime());
+                    values.put(key, Double.toString(valor));
+                    db.insert(FeedReaderDbHelper.TABLE_NAME, null, values);
+
                 }
 
                 @Override

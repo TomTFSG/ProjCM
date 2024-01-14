@@ -4,9 +4,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.widget.TextViewCompat;
 import androidx.fragment.app.Fragment;
 
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +29,7 @@ import com.anychart.enums.Anchor;
 import com.anychart.enums.MarkerType;
 import com.anychart.enums.TooltipPositionMode;
 import com.anychart.graphics.vector.Stroke;
+import com.anychart.scales.Linear;
 import com.example.projeto.misc.FeedReaderDbHelper;
 import com.example.projeto.R;
 import com.example.projeto.misc.forHistorico.LineFromHistoryGraph;
@@ -69,7 +72,8 @@ public class Historico extends Fragment {
                 FeedReaderDbHelper.COLUMN_NAME_TIME,
                 FeedReaderDbHelper.COLUMN_NAME_LIGHT,
                 FeedReaderDbHelper.COLUMN_NAME_TEMP,
-                FeedReaderDbHelper.COLUMN_NAME_HUMI
+                FeedReaderDbHelper.COLUMN_NAME_HUMI,
+                FeedReaderDbHelper.COLUMN_NAME_REGA
         };
 
         String sortOrder = FeedReaderDbHelper.COLUMN_NAME_TIME + " DESC";
@@ -84,36 +88,116 @@ public class Historico extends Fragment {
                 sortOrder
         );
 
+
+        int[] counters = new int[]{0, 0, 0};
         while (cursor.moveToNext()) {
-            LinearLayout[] dataLayouts = new LinearLayout[]{
-                    (LinearLayout) view.findViewById(R.id.dataDateLayout),
-                    (LinearLayout) view.findViewById(R.id.dataLuzLayout),
-                    (LinearLayout) view.findViewById(R.id.dataHumidadeLayout),
-                    (LinearLayout) view.findViewById(R.id.dataTempLayout)
-            };
-                    // // // // // colocar dados
-            for(int i = 0; i < projection.length; i++){
+            String time = cursor.getString(cursor.getColumnIndexOrThrow(projection[0]));
+            for(int i = 1; i < projection.length - 1; i++){
                 String coluna = projection[i];
-                String val = cursor.getString(cursor.getColumnIndexOrThrow(coluna));
-                String time = cursor.getString(cursor.getColumnIndexOrThrow(projection[0]));
+                String valGraf = cursor.getString(cursor.getColumnIndexOrThrow(coluna));
 
-                if(val != null && time != null){
-                    TextView novoDadoTextView = new TextView(getContext());
-                    novoDadoTextView.setText(val);
-                    dataLayouts[i].addView(novoDadoTextView);
+                if(valGraf != null && time != null && counters[i - 1] < 7){
+                    if(i == 1) DataLuz.add(new ValueDataEntry(time, Double.parseDouble(valGraf)));
+                    else if(i == 2) DataHumidade.add(new ValueDataEntry(time, Double.parseDouble(valGraf)));
+                    else if(i == 3) DataTemperatura.add(new ValueDataEntry(time, Double.parseDouble(valGraf)));
 
-                    TextViewCompat.setTextAppearance(
-                            novoDadoTextView,
-                            (i == 0) ? R.style.HistoryColumnDateItemTheme : R.style.HistoryColumnValuesItemTheme
-                        );
-                    if(i == 1) DataLuz.add(new ValueDataEntry(time, Double.parseDouble(val)));
-                    else if(i == 2) DataHumidade.add(new ValueDataEntry(time, Double.parseDouble(val)));
-                    else if(i == 3) DataTemperatura.add(new ValueDataEntry(time, Double.parseDouble(val)));
+                    counters[i - 1]++;
                 }
             }
 
+            String valRega = cursor.getString(cursor.getColumnIndexOrThrow(projection[4]));
+            if(valRega != null && time != null) {
+                LinearLayout infoRega = view.findViewById(R.id.infoRega);
+                LinearLayout regarLayout = new LinearLayout(getContext());
+                regarLayout.setPadding(24, 24, 24, 24);
+                regarLayout.setBackgroundColor(getResources().getColor(R.color.white));
+                LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.FILL_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                );
+                linearParams.setMargins(64, 16, 64, 16);
+
+                regarLayout.setLayoutParams(linearParams);
+                regarLayout.setOrientation(LinearLayout.HORIZONTAL);
+
+                // horario e rega (mL)
+                String[] texts = new String[]{time, valRega + "mL"};
+
+                for(int i = 0; i < texts.length; i++) {
+                    TextView textView = new TextView(getContext());
+                    LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                    );
+                    textParams.setMargins(0, 0, 32, 0);
+                    textView.setLayoutParams(textParams);
+                    textView.setText(texts[i]);
+                    textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
+                    regarLayout.addView(textView);
+                }
+
+                infoRega.addView(regarLayout);
+            }
         }
         cursor.close();
+
+
+
+
+
+        String[] projectionRega= {
+                FeedReaderDbHelper.COLUMN_NAME_TIME,
+                FeedReaderDbHelper.COLUMN_NAME_REGA
+        };
+        Cursor cursorRega = db.query(
+                FeedReaderDbHelper.TABLE_NAME,
+                projectionRega,
+                null, // Remove the selection and selectionArgs
+                null,
+                null,
+                null,
+                sortOrder
+        );
+
+        while (cursorRega.moveToNext()) {
+                /*
+            String val = cursor.getString(cursor.getColumnIndexOrThrow(projection[1]));
+
+            String time = cursor.getString(cursor.getColumnIndexOrThrow(projection[0]));
+
+            if(val != null && time != null) {
+                LinearLayout infoRega = view.findViewById(R.id.infoRega);
+                LinearLayout regarLayout = new LinearLayout(getContext());
+                ViewGroup.LayoutParams linearParams = new ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.FILL_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                );
+                regarLayout.setLayoutParams(linearParams);
+                regarLayout.setOrientation(LinearLayout.HORIZONTAL);
+
+                TextView dataRega = new TextView(getContext());
+                TextView nRega = new TextView(getContext());
+                ViewGroup.LayoutParams textParams = new ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                );
+                dataRega.setLayoutParams(textParams);
+                nRega.setLayoutParams(textParams);
+
+
+                dataRega.setText("Data Aqui");
+                dataRega.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
+                nRega.setText("000dL");
+                regarLayout.addView(dataRega);
+                regarLayout.addView(nRega);
+                infoRega.addView(regarLayout);
+            }
+             */
+        }
+        cursorRega.close();
+
+
+
         setupChart();
 
 
@@ -131,33 +215,26 @@ public class Historico extends Fragment {
     private void setupChart(){
 
         graph = view.findViewById(R.id.temp);
-        graph.setBackgroundColor("black");
+        graph.setBackgroundColor("#1a2b25");
 
 
         line = AnyChart.line();
-        line.background().fill("black");
+        line.background().fill("#1a2b25");
         line.animation(false);
 
-        line.padding(10d, 20d, 5d, 20d);
-
-        line.crosshair().enabled(true);
         line.crosshair()
-                .yLabel(true)
+                .enabled(true)
+                .yLabel(false)
                 .yStroke((Stroke) null, null, null, (String) null, (String) null);
 
-        line.tooltip().positionMode(TooltipPositionMode.POINT);
-        line.title("Temperatura e Humidade");
-        line.title().fontColor("black");
-        line.yAxis(0).title("Valor");
-        line.yAxis(0).title().fontColor("white");
+
         line.xAxis(0).labels().padding(5d, 5d, 5d, 5d);
-        line.xAxis(0).labels().fontColor("black");
 
         LinhaLuz = new LineFromHistoryGraph(
-                "#FAB0B9",
+                "#D0D9AF",
                 "Light (%)",
-                "{ x: 'x', value: 'temperature' }",
-                DataTemperatura
+                "{ x: 'x', value: 'light' }",
+                DataLuz
         );
         LinhaLuz.doLineOnCartesian(line);
         //
@@ -170,10 +247,10 @@ public class Historico extends Fragment {
         LinhaTemperatura.doLineOnCartesian(line);
         //
         LinhaHumidade = new LineFromHistoryGraph(
-                "#FAB0B9",
+                "#495B30",
                 "Soil Moisture (%)",
-                "{ x: 'x', value: 'temperature' }",
-                DataTemperatura
+                "{ x: 'x', value: 'soilmoist' }",
+                DataHumidade
         );
         LinhaHumidade.doLineOnCartesian(line);
         /*
