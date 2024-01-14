@@ -22,6 +22,7 @@ import com.example.projeto.R;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -80,11 +81,10 @@ public class MessageReceiver extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-
         acquireWakeLock();
-        initMqttHelper();
+        initMqttHelper(); // Ensure that this method initializes the 'helper' object
         connectToMqttBroker();
-
+        
         disconnectFromMqttBroker();
         releaseWakeLock();
     }
@@ -118,10 +118,15 @@ public class MessageReceiver extends IntentService {
                 @Override
                 public void connectComplete(boolean reconnect, String serverURI) {
                     Log.d(TAG, "Connected to MQTT broker");
-                    helper.subscribe("temperature");
-                    helper.subscribe("humidity");
-                    helper.subscribe("light");
-                    helper.subscribe("rega");
+                    try {
+                        helper.subscribe("temperature");
+                        helper.subscribe("humidity");
+                        helper.subscribe("light");
+                        helper.subscribe("rega");
+                    } catch (MqttException e) {
+                        // Handle the exception (e.g., log it or show an error message)
+                        e.printStackTrace();
+                    }
                 }
 
                 @Override
@@ -200,7 +205,12 @@ public class MessageReceiver extends IntentService {
     private void connectToMqttBroker() {
         MqttConnectOptions mqttConnectOptions = new MqttConnectOptions();
         mqttConnectOptions.setAutomaticReconnect(true);
-        helper.connect(mqttConnectOptions);
+        try {
+            helper.connect(mqttConnectOptions);
+        } catch (MqttException e) {
+            // Handle the exception (e.g., log it or show an error message)
+            e.printStackTrace();
+        }
     }
 
     private void disconnectFromMqttBroker() {
@@ -222,7 +232,12 @@ public class MessageReceiver extends IntentService {
                 payload.put("humi", humidade.toString());
                 payload.put("light", luz.toString());
                 String jsonS = payload.toString();
-                helper.publish("water", jsonS);
+                try {
+                    helper.publish("water", jsonS);
+                } catch (MqttException e) {
+                    // Handle the exception (e.g., log it or show an error message)
+                    e.printStackTrace();
+                }
                 Log.d("PUBLICADOR","PUBLISHED "+jsonS );
             } catch (JSONException e) {
                 Log.e(TAG, "Error creating JSON payload", e);

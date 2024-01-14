@@ -1,5 +1,4 @@
 package com.example.projeto.misc;
-
 import android.content.Context;
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
@@ -20,40 +19,24 @@ public class MqttHelper {
         mqttAndroidClient.setCallback(callback);
     }
 
-    public void connect(MqttConnectOptions options) {
-        try {
-            mqttAndroidClient.connect(options, null, null);
-        } catch (MqttException e) {
-            e.printStackTrace();
-        }
+    public void connect(MqttConnectOptions options) throws MqttException {
+        mqttAndroidClient.connect(options, null, null);
     }
 
-    public void disconnect() {
-        try {
-            mqttAndroidClient.disconnect();
-        } catch (MqttException e) {
-            e.printStackTrace();
-        }
+    public void disconnect() throws MqttException {
+        mqttAndroidClient.disconnect();
     }
 
-    public void subscribe(String topic) {
-        try {
-            // Add the receiver permission when subscribing
-            String receiverPermission = "com.example.projeto.permission.MQTT_RECEIVER";
-            mqttAndroidClient.subscribe(topic, DEFAULT_QOS, null);
-        } catch (MqttException e) {
-            e.printStackTrace();
-        }
+    public void subscribe(String topic) throws MqttException {
+        // Add the receiver permission when subscribing
+        String receiverPermission = "com.example.projeto.permission.MQTT_RECEIVER";
+        mqttAndroidClient.subscribe(topic, DEFAULT_QOS, null);
     }
 
-    public void publish(String topic, String payload) {
-        try {
-            MqttMessage message = new MqttMessage(payload.getBytes());
-            message.setQos(DEFAULT_QOS);
-            message.setRetained(false);
-            mqttAndroidClient.publish(topic, message);
-        } catch (MqttException e) {
-            e.printStackTrace();
-        }
+    public void publish(String topic, String payload) throws MqttException {
+        MqttMessage message = new MqttMessage(payload.getBytes());
+        message.setQos(DEFAULT_QOS);
+        message.setRetained(false);
+        mqttAndroidClient.publish(topic, message);
     }
 }

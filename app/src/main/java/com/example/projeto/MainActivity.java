@@ -25,6 +25,7 @@ import com.example.projeto.viewmodels.SharedViewModel;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.text.SimpleDateFormat;
@@ -108,11 +109,16 @@ public class MainActivity extends AppCompatActivity {
         helper.setCallback(new MqttCallbackExtended() {
             @Override
             public void connectComplete(boolean reconnect, String serverURI) {
-                helper.subscribe("temperature");
-                Log.i(TAG,"SUBSCRIBED");
-                helper.subscribe("humidity");
-                helper.subscribe("light");
-                helper.subscribe("rega");
+                try {
+                    helper.subscribe("temperature");
+                    Log.i(TAG, "SUBSCRIBED");
+                    helper.subscribe("humidity");
+                    helper.subscribe("light");
+                    helper.subscribe("rega");
+                } catch (MqttException e) {
+                    // Handle the exception (e.g., log it or show an error message)
+                    e.printStackTrace();
+                }
                 if (savedInstanceState == null && !menuFragmentAdded) {
                     menuFragmentAdded=true;
                     getSupportFragmentManager().beginTransaction()
@@ -162,7 +168,12 @@ public class MainActivity extends AppCompatActivity {
         */
         MqttConnectOptions mqttConnectOptions = new MqttConnectOptions();
         mqttConnectOptions.setAutomaticReconnect(true);
-        helper.connect(mqttConnectOptions);
+        try {
+            helper.connect(mqttConnectOptions);
+        } catch (MqttException e) {
+            // Handle the exception (e.g., log it or show an error message)
+            e.printStackTrace();
+        }
         Log.i(TAG,"ABACATE");
 
 
