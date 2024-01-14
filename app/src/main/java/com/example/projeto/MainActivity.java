@@ -129,20 +129,17 @@ public class MainActivity extends AppCompatActivity {
                 String payload=new String(message.getPayload());
                 double valor = Double.parseDouble(payload);
 
-                ContentValues values = new ContentValues();
-                String key = "";
+
 
 
                 if (topic.equals("temperature")) {
-                    key = FeedReaderDbHelper.COLUMN_NAME_TEMP;
+
                     sharedViewModel.setTemperatura(valor);
                     temperatura = valor;
                 } else if (topic.equals("humidity")) {
-                    key = FeedReaderDbHelper.COLUMN_NAME_HUMI;
                     sharedViewModel.setHumidade(valor);
                     humidade = valor;
                 } else if (topic.equals("light")) {
-                    key = FeedReaderDbHelper.COLUMN_NAME_LIGHT;
                     final double maxLUX = Math.pow(10, 5);
                     // escala logaritmica
                     final double valEscalada = 100 * (Math.log(valor + 0.9) / Math.log(maxLUX + 0.9));
@@ -150,9 +147,7 @@ public class MainActivity extends AppCompatActivity {
                     luz = valor;
                 }
 
-                values.put(FeedReaderDbHelper.COLUMN_NAME_TIME, getCurrentTime());
-                values.put(key, Double.toString(valor));
-                db.insert(FeedReaderDbHelper.TABLE_NAME, null, values);
+
             }
 
             @Override
@@ -177,8 +172,5 @@ public class MainActivity extends AppCompatActivity {
     ///////////    ///////////    ///////////    ///////////    ///////////
     ///////////    ///////////    ///////////    ///////////    ///////////
 
-    private String getCurrentTime() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.getDefault());
-        return sdf.format(new Date());
-    }
+
 }

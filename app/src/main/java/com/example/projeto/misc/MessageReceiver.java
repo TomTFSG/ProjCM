@@ -5,6 +5,7 @@ import android.app.IntentService;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -25,7 +26,10 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 public class MessageReceiver extends IntentService {
     private static final String TAG = "MessageReceiver";
@@ -129,13 +133,17 @@ public class MessageReceiver extends IntentService {
                 public void messageArrived(String topic, MqttMessage message) throws Exception {
                     String payload = new String(message.getPayload());
                     double valor = Double.parseDouble(payload);
-                    Log.d("AHAHAHAHAAHA", "T: " + topic + " P: " + payload);
-
+                    Log.d("ding", "T: " + topic + " P: " + payload);
+                    ContentValues values = new ContentValues();
+                    String key = "";
                     if (topic.equals("temperature")) {
+                        key = FeedReaderDbHelper.COLUMN_NAME_TEMP;
                         temperatura = valor;
                     } else if (topic.equals("humidity")) {
+                        key = FeedReaderDbHelper.COLUMN_NAME_HUMI;
                         humidade = valor;
                     } else if (topic.equals("light")) {
+                        key = FeedReaderDbHelper.COLUMN_NAME_LIGHT;
                         luz = valor;
                         publishMqttMessage();
                     } else if(topic.equals("rega") && payload != null){
@@ -170,8 +178,11 @@ public class MessageReceiver extends IntentService {
                             long triggerTime = calendar.getTimeInMillis();
                             alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent);
                         }
-
-
+                    }
+                    if(!topic.equals("rega")){
+                        values.put(FeedReaderDbHelper.COLUMN_NAME_TIME, getCurrentTime());
+                        values.put(key, Double.toString(valor));
+                        db.insert(FeedReaderDbHelper.TABLE_NAME, null, values);
                     }
                 }
 
@@ -246,5 +257,9 @@ public class MessageReceiver extends IntentService {
         // Show the notification.
         notificationManager.notify(notificationId, notificationBuilder.build());
 
+    }
+    private String getCurrentTime() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.getDefault());
+        return sdf.format(new Date());
     }
 }
