@@ -53,8 +53,8 @@ public class MessageReceiver extends IntentService {
     public void onCreate() {
         super.onCreate();
 
-        FeedReaderDbHelper dbHelper = new FeedReaderDbHelper(getApplicationContext());
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        dbHelper = new FeedReaderDbHelper(getApplicationContext());
+        db = dbHelper.getWritableDatabase();
 
         String[] projection = {
                 FeedReaderDbHelper.COLUMN_NAME_ATUAL
@@ -140,24 +140,26 @@ public class MessageReceiver extends IntentService {
                     String payload = new String(message.getPayload());
                     double valor = Double.parseDouble(payload);
                     Log.d("ding", "T: " + topic + " P: " + payload);
-                    ContentValues values = new ContentValues();
                     String key = "";
                     if (topic.equals("temperature")) {
-                        key = FeedReaderDbHelper.COLUMN_NAME_TEMP;
                         temperatura = valor;
                     } else if (topic.equals("humidity")) {
-                        key = FeedReaderDbHelper.COLUMN_NAME_HUMI;
                         humidade = valor;
                     } else if (topic.equals("light")) {
-                        key = FeedReaderDbHelper.COLUMN_NAME_LIGHT;
                         luz = valor;
                         publishMqttMessage();
                     } else if(topic.equals("rega") && payload != null){
-                        key = FeedReaderDbHelper.COLUMN_NAME_REGA;
+                        Log.w("R ARR","REGADO ARRIVED");
+                        ContentValues values = new ContentValues();
+                        values.put(FeedReaderDbHelper.COLUMN_NAME_TIME, getCurrentTime());
+                        values.put(FeedReaderDbHelper.COLUMN_NAME_TEMP, Double.toString(temperatura));
+                        values.put(FeedReaderDbHelper.COLUMN_NAME_HUMI, Double.toString(humidade));
+                        values.put(FeedReaderDbHelper.COLUMN_NAME_LIGHT, Double.toString(luz));
+                        values.put(FeedReaderDbHelper.COLUMN_NAME_REGA, Double.toString(valor));
+                        db.insert(FeedReaderDbHelper.TABLE_NAME, null, values);
                         Log.w("REGADO",payload+"dl regados");
-                        disconnectFromMqttBroker();
                         sendNotification(payload);
-                        releaseWakeLock();
+
 
                         AlarmManager alarmManager;
                         PendingIntent pendingIntent;
@@ -185,11 +187,11 @@ public class MessageReceiver extends IntentService {
                             long triggerTime = calendar.getTimeInMillis();
                             alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent);
                         }
+                        disconnectFromMqttBroker();
+                        releaseWakeLock();
                     }
 
-                    values.put(FeedReaderDbHelper.COLUMN_NAME_TIME, getCurrentTime());
-                    values.put(key, Double.toString(valor));
-                    db.insert(FeedReaderDbHelper.TABLE_NAME, null, values);
+
 
                 }
 
