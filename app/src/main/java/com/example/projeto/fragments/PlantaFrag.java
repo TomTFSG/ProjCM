@@ -142,7 +142,7 @@ public class PlantaFrag extends Fragment {
                 .addToBackStack(null)
                 .commit()
         );
-        ImageButton menuB = view.findViewById(R.id.imageButtonHistorico);
+        Button menuB = view.findViewById(R.id.buttonPlants);
         menuB.setOnClickListener(v -> getActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.frame,Menu.class,null)

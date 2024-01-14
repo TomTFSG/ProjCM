@@ -86,7 +86,7 @@ public class HoraFrag extends Fragment {
         });
 
 
-        ImageButton back=view.findViewById(R.id.buttonBack);
+        Button back=view.findViewById(R.id.buttonBack);
         back.setOnClickListener(v -> getActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.frame, PlantaFrag.class,null)
