@@ -147,6 +147,7 @@ public class MessageReceiver extends IntentService {
                         luz = valor;
                         publishMqttMessage();
                     } else if(topic.equals("rega") && payload != null){
+                        key = FeedReaderDbHelper.COLUMN_NAME_REGA;
                         Log.w("REGADO",payload+"dl regados");
                         disconnectFromMqttBroker();
                         sendNotification(payload);
@@ -179,11 +180,11 @@ public class MessageReceiver extends IntentService {
                             alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent);
                         }
                     }
-                    if(!topic.equals("rega")){
-                        values.put(FeedReaderDbHelper.COLUMN_NAME_TIME, getCurrentTime());
-                        values.put(key, Double.toString(valor));
-                        db.insert(FeedReaderDbHelper.TABLE_NAME, null, values);
-                    }
+
+                    values.put(FeedReaderDbHelper.COLUMN_NAME_TIME, getCurrentTime());
+                    values.put(key, Double.toString(valor));
+                    db.insert(FeedReaderDbHelper.TABLE_NAME, null, values);
+
                 }
 
                 @Override

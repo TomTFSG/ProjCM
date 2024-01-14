@@ -19,6 +19,7 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
     public static final String COLUMN_NAME_TEMP  = "temperature";
     public static final String COLUMN_NAME_HUMI = "humidity";
     public static final String COLUMN_NAME_LIGHT = "light";
+    public static final String COLUMN_NAME_REGA = "rega";
     public static final String _ID = "id";
 
     SQLiteDatabase sql;
@@ -31,6 +32,7 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
                     COLUMN_NAME_TEMP + " TEXT,"+
                     COLUMN_NAME_HUMI + " TEXT,"+
                     COLUMN_NAME_LIGHT + " TEXT,"+
+                    COLUMN_NAME_REGA + " TEXT,"+
                     COLUMN_NAME_ATUAL + " INTEGER)";
 
     public static final String SQL_DELETE_ENTRIES="DROP TABLE IF EXISTS " + TABLE_NAME;;
