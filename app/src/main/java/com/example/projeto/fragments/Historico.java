@@ -84,6 +84,7 @@ public class Historico extends Fragment {
                 sortOrder
         );
 
+
         while (cursor.moveToNext()) {
             LinearLayout[] dataLayouts = new LinearLayout[]{
                     (LinearLayout) view.findViewById(R.id.dataDateLayout),
@@ -104,16 +105,26 @@ public class Historico extends Fragment {
 
                     TextViewCompat.setTextAppearance(
                             novoDadoTextView,
-                            (i == 0) ? R.style.HistoryColumnDateItemTheme : R.style.HistoryColumnValuesItemTheme
+                            (i == 0)
+                                    ? R.style.HistoryColumnDateItemTheme
+                                    : R.style.HistoryColumnValuesItemTheme
                         );
-                    if(i == 1) DataLuz.add(new ValueDataEntry(time, Double.parseDouble(val)));
-                    else if(i == 2) DataHumidade.add(new ValueDataEntry(time, Double.parseDouble(val)));
-                    else if(i == 3) DataTemperatura.add(new ValueDataEntry(time, Double.parseDouble(val)));
+                    if(i == 1) {
+                        DataLuz.add(new ValueDataEntry(time, Double.parseDouble(val)));
+                    }
+                    else if(i == 2) {
+                        DataHumidade.add(new ValueDataEntry(time, Double.parseDouble(val)));
+                    }
+                    else if(i == 3) {
+                        DataTemperatura.add(new ValueDataEntry(time, Double.parseDouble(val)));
+                    }
                 }
             }
-
         }
         cursor.close();
+
+
+
         setupChart();
 
 
@@ -131,33 +142,26 @@ public class Historico extends Fragment {
     private void setupChart(){
 
         graph = view.findViewById(R.id.temp);
-        graph.setBackgroundColor("black");
+        graph.setBackgroundColor("white");
 
 
         line = AnyChart.line();
         line.background().fill("black");
         line.animation(false);
 
-        line.padding(10d, 20d, 5d, 20d);
-
-        line.crosshair().enabled(true);
         line.crosshair()
-                .yLabel(true)
+                .enabled(true)
+                .yLabel(false)
                 .yStroke((Stroke) null, null, null, (String) null, (String) null);
 
-        line.tooltip().positionMode(TooltipPositionMode.POINT);
-        line.title("Temperatura e Humidade");
-        line.title().fontColor("black");
-        line.yAxis(0).title("Valor");
-        line.yAxis(0).title().fontColor("white");
+
         line.xAxis(0).labels().padding(5d, 5d, 5d, 5d);
-        line.xAxis(0).labels().fontColor("black");
 
         LinhaLuz = new LineFromHistoryGraph(
-                "#FAB0B9",
+                "#D0D9AF",
                 "Light (%)",
-                "{ x: 'x', value: 'temperature' }",
-                DataTemperatura
+                "{ x: 'x', value: 'light' }",
+                DataLuz
         );
         LinhaLuz.doLineOnCartesian(line);
         //
@@ -170,10 +174,10 @@ public class Historico extends Fragment {
         LinhaTemperatura.doLineOnCartesian(line);
         //
         LinhaHumidade = new LineFromHistoryGraph(
-                "#FAB0B9",
+                "#495B30",
                 "Soil Moisture (%)",
-                "{ x: 'x', value: 'temperature' }",
-                DataTemperatura
+                "{ x: 'x', value: 'soilmoist' }",
+                DataHumidade
         );
         LinhaHumidade.doLineOnCartesian(line);
         /*

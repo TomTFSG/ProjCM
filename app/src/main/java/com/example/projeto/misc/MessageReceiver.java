@@ -147,7 +147,7 @@ public class MessageReceiver extends IntentService {
                         luz = valor;
                         publishMqttMessage();
                     } else if(topic.equals("rega") && payload != null){
-                        Log.w("REGADO",payload+"ml regados");
+                        Log.w("REGADO",payload+"dl regados");
                         disconnectFromMqttBroker();
                         sendNotification(payload);
                         releaseWakeLock();

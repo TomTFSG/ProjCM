@@ -22,7 +22,7 @@
         android:id="@+id/ButtonS"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="100dp"
+        android:layout_marginBottom="32dp"
         android:background="@drawable/button1"
         android:fontFamily="@font/montserrat_alternates_bold"
         android:paddingStart="20dp"
