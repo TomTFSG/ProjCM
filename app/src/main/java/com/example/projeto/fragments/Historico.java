@@ -120,8 +120,8 @@ public class Historico extends Fragment {
                 regarLayout.setLayoutParams(linearParams);
                 regarLayout.setOrientation(LinearLayout.HORIZONTAL);
 
-                // horario e rega (dL)
-                String[] texts = new String[]{time, valRega + "dL"};
+                // horario e rega (mL)
+                String[] texts = new String[]{time, valRega + "mL"};
 
                 for(int i = 0; i < texts.length; i++) {
                     TextView textView = new TextView(getContext());

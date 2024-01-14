@@ -18,6 +18,7 @@ import androidx.core.app.NotificationCompat;
 
 import com.example.projeto.MainActivity;
 import com.example.projeto.R;
+import com.example.projeto.viewmodels.SharedViewModel;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
@@ -42,6 +43,7 @@ public class MessageReceiver extends IntentService {
     Double type;
     FeedReaderDbHelper dbHelper;
     SQLiteDatabase db;
+    SharedViewModel sharedViewModel;
 
     public MessageReceiver() {
         super("MessageReceiver");
@@ -49,7 +51,6 @@ public class MessageReceiver extends IntentService {
     @Override
     public void onCreate() {
         super.onCreate();
-
 
         FeedReaderDbHelper dbHelper = new FeedReaderDbHelper(getApplicationContext());
         SQLiteDatabase db = dbHelper.getReadableDatabase();
