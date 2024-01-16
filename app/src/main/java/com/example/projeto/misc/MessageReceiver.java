@@ -147,6 +147,9 @@ public class MessageReceiver extends IntentService {
                         humidade = valor;
                     } else if (topic.equals("light")) {
                         luz = valor;
+                        final double maxLUX = Math.pow(10, 5);
+                        final double valEscalada = 100 * (Math.log(valor + 0.9) / Math.log(maxLUX + 0.9));
+
                         publishMqttMessage();
                     } else if(topic.equals("rega") && payload != null){
                         Log.w("R ARR","REGADO ARRIVED");
@@ -154,7 +157,9 @@ public class MessageReceiver extends IntentService {
                         values.put(FeedReaderDbHelper.COLUMN_NAME_TIME, getCurrentTime());
                         values.put(FeedReaderDbHelper.COLUMN_NAME_TEMP, Double.toString(temperatura));
                         values.put(FeedReaderDbHelper.COLUMN_NAME_HUMI, Double.toString(humidade));
-                        values.put(FeedReaderDbHelper.COLUMN_NAME_LIGHT, Double.toString(luz));
+                        final double maxLUX = Math.pow(10, 5);
+                        final double valEscalada = 100 * (Math.log(luz + 0.9) / Math.log(maxLUX + 0.9));
+                        values.put(FeedReaderDbHelper.COLUMN_NAME_LIGHT, Double.toString(valEscalada));
                         values.put(FeedReaderDbHelper.COLUMN_NAME_REGA, Double.toString(valor));
                         db.insert(FeedReaderDbHelper.TABLE_NAME, null, values);
                         Log.w("REGADO",payload+"dl regados");
